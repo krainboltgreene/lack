@@ -1,9 +1,6 @@
 module Rack
   # *Handlers* connect web servers with Rack.
   #
-  # Rack includes Handlers for Thin, WEBrick, FastCGI, CGI, SCGI
-  # and LiteSpeed.
-  #
   # Handlers usually are activated by calling <tt>MyHandler.run(myapp)</tt>.
   # A second optional hash can be passed to include server-specific
   # configuration.

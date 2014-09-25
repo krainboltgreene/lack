@@ -5,9 +5,6 @@
 
 # The Rack main module, serving as a namespace for all core Rack
 # modules and classes.
-#
-# All modules meant for use in your application are <tt>autoload</tt>ed here,
-# so it should be enough just to <tt>require rack.rb</tt> in your code.
 require "optparse"
 require "fileutils"
 require "set"
