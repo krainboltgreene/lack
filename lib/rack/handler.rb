@@ -5,7 +5,7 @@ module Rack
   # A second optional hash can be passed to include server-specific
   # configuration.
   module Handler
-    require_relative "handler/webbrick"
+    require_relative "handler/webrick"
     def self.get(server)
       return unless server
       server = server.to_s
