@@ -1,9 +1,3 @@
-# -*- encoding: binary -*-
-require 'fileutils'
-require 'set'
-require 'tempfile'
-require 'rack/multipart'
-require 'time'
 
 major, minor, patch = RUBY_VERSION.split('.').map { |v| v.to_i }
 

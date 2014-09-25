@@ -8,6 +8,13 @@
 #
 # All modules meant for use in your application are <tt>autoload</tt>ed here,
 # so it should be enough just to <tt>require rack.rb</tt> in your code.
+require "optparse"
+require "fileutils"
+require "set"
+require "tempfile"
+require "rack/multipart"
+require "time"
+require "uri/common"
 
 module Rack
   # The Rack protocol version number implemented.
@@ -23,66 +30,13 @@ module Rack
     "1.5"
   end
 
-  autoload :Builder, "rack/builder"
-  autoload :BodyProxy, "rack/body_proxy"
-  autoload :Cascade, "rack/cascade"
-  autoload :Chunked, "rack/chunked"
-  autoload :CommonLogger, "rack/commonlogger"
-  autoload :ConditionalGet, "rack/conditionalget"
-  autoload :Config, "rack/config"
-  autoload :ContentLength, "rack/content_length"
-  autoload :ContentType, "rack/content_type"
-  autoload :ETag, "rack/etag"
-  autoload :File, "rack/file"
-  autoload :Deflater, "rack/deflater"
-  autoload :Directory, "rack/directory"
-  autoload :ForwardRequest, "rack/recursive"
-  autoload :Handler, "rack/handler"
-  autoload :Head, "rack/head"
-  autoload :Lint, "rack/lint"
-  autoload :Lock, "rack/lock"
-  autoload :Logger, "rack/logger"
-  autoload :MethodOverride, "rack/methodoverride"
-  autoload :Mime, "rack/mime"
-  autoload :NullLogger, "rack/nulllogger"
-  autoload :Recursive, "rack/recursive"
-  autoload :Reloader, "rack/reloader"
-  autoload :Runtime, "rack/runtime"
-  autoload :Sendfile, "rack/sendfile"
-  autoload :Server, "rack/server"
-  autoload :ShowExceptions, "rack/showexceptions"
-  autoload :ShowStatus, "rack/showstatus"
-  autoload :Static, "rack/static"
-  autoload :TempfileReaper, "rack/tempfile_reaper"
-  autoload :URLMap, "rack/urlmap"
-  autoload :Utils, "rack/utils"
-  autoload :Multipart, "rack/multipart"
-
-  autoload :MockRequest, "rack/mock"
-  autoload :MockResponse, "rack/mock"
-
-  autoload :Request, "rack/request"
-  autoload :Response, "rack/response"
-
-  module Auth
-    autoload :Basic, "rack/auth/basic"
-    autoload :AbstractRequest, "rack/auth/abstract/request"
-    autoload :AbstractHandler, "rack/auth/abstract/handler"
-    module Digest
-      autoload :MD5, "rack/auth/digest/md5"
-      autoload :Nonce, "rack/auth/digest/nonce"
-      autoload :Params, "rack/auth/digest/params"
-      autoload :Request, "rack/auth/digest/request"
-    end
-  end
-
-  module Session
-    autoload :Cookie, "rack/session/cookie"
-    autoload :Pool, "rack/session/pool"
-    autoload :Memcache, "rack/session/memcache"
-  end
-
-  module Utils
-    autoload :OkJson, "rack/utils/okjson"
-  end
+  require_relative "rack/version"
+  require_relative "rack/body_proxy"
+  require_relative "rack/builder"
+  require_relative "rack/handler"
+  require_relative "rack/mime"
+  require_relative "rack/request"
+  require_relative "rack/response"
+  require_relative "rack/server"
+  require_relative "rack/utils"
 end

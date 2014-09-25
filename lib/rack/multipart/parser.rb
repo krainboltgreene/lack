@@ -1,4 +1,3 @@
-require 'rack/utils'
 
 module Rack
   module Multipart

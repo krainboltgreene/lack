@@ -1,5 +1,3 @@
-require 'rack/utils'
-
 module Rack
   # Rack::Request provides a convenient interface to a Rack
   # environment.  It is stateless, the environment +env+ passed to the

@@ -3,9 +3,9 @@ module Rack
   #
   # Usually, Rack::Request#POST takes care of calling this.
   module Multipart
-    autoload :UploadedFile, 'rack/multipart/uploaded_file'
-    autoload :Parser, 'rack/multipart/parser'
-    autoload :Generator, 'rack/multipart/generator'
+    require_relative "multipart/uploaded_file"
+    require_relative "multipart/parser"
+    require_relative "multipart/generator"
 
     EOL = "\r\n"
     MULTIPART_BOUNDARY = "AaB03x"
