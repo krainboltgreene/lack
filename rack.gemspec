@@ -1,33 +1,28 @@
-Gem::Specification.new do |s|
-  s.name            = "rack"
-  s.version         = "1.6.0.beta"
-  s.platform        = Gem::Platform::RUBY
-  s.summary         = "a modular Ruby webserver interface"
-  s.license         = "MIT"
+#!/usr/bin/env ruby
+# coding: utf-8
 
-  s.description = <<-EOF
-Rack provides a minimal, modular and adaptable interface for developing
-web applications in Ruby.  By wrapping HTTP requests and responses in
-the simplest way possible, it unifies and distills the API for web
-servers, web frameworks, and software in between (the so-called
-middleware) into a single method call.
+lib = File.expand_path("../lib", __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require "rack/version"
 
-Also see http://rack.github.io/.
-EOF
+Gem::Specification.new do |spec|
+  spec.name          = "rack"
+  spec.version       = Rack::VERSION
+  spec.authors       = ["Christian Neukirchen", "Kurtis Rainbolt-Greene"]
+  spec.email         = ["chneukirchen@gmail.com", "me@kurtisrainboltgreene.name"]
+  spec.summary       = %q{A modular Ruby webserver interface.}
+  spec.description   = spec.summary
+  spec.homepage      = "http://krainboltgreene.github.io/blankgem"
+  spec.license       = "MIT"
 
-  s.files           = Dir['{bin/*,contrib/*,example/*,lib/**/*,test/**/*}'] +
-                        %w(COPYING KNOWN-ISSUES rack.gemspec Rakefile README.rdoc SPEC)
-  s.bindir          = 'bin'
-  s.executables     << 'rackup'
-  s.require_path    = 'lib'
-  s.extra_rdoc_files = ['README.rdoc', 'KNOWN-ISSUES']
-  s.test_files      = Dir['test/spec_*.rb']
+  spec.files         = Dir["lib/**/*"]
+  spec.executables   = Dir["bin/**/*"].map! { |f| f.gsub(/bin\//, "") }
+  spec.test_files    = Dir["test/**/*", "spec/**/*"]
+  spec.require_paths = ["lib"]
 
-  s.author          = 'Christian Neukirchen'
-  s.email           = 'chneukirchen@gmail.com'
-  s.homepage        = 'http://rack.github.io/'
-  s.rubyforge_project = 'rack'
-
-  s.add_development_dependency 'bacon'
-  s.add_development_dependency 'rake'
+  spec.add_development_dependency "bundler", "~> 1.3"
+  spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "rake", "~> 10.1"
+  spec.add_development_dependency "pry", "~> 0.9"
+  spec.add_development_dependency "pry-doc", "~> 0.6"
 end
