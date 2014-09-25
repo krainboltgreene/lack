@@ -11,7 +11,7 @@ module Rack
       server = server.to_s
 
       unless @handlers.include? server
-        load_error = try_require('rack/handler', server)
+        load_error = try_require("rack/handler", server)
       end
 
       if klass = @handlers[server]

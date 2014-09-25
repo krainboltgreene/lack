@@ -20,15 +20,12 @@ module Rack
     MULTIPART_CONTENT_DISPOSITION = /Content-Disposition:.*\s+name="?([^\";]*)"?/ni
     MULTIPART_CONTENT_ID = /Content-ID:\s*([^#{EOL}]*)/ni
 
-    class << self
-      def parse_multipart(env)
-        Parser.create(env).parse
-      end
-
-      def build_multipart(params, first = true)
-        Generator.new(params, first).dump
-      end
+    def self.parse_multipart(env)
+      Parser.create(env).parse
     end
 
+    def self.build_multipart(params, first = true)
+      Generator.new(params, first).dump
+    end
   end
 end

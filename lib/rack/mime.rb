@@ -13,10 +13,9 @@ module Rack
     # This is a shortcut for:
     #     Rack::Mime::MIME_TYPES.fetch('.foo', 'application/octet-stream')
 
-    def mime_type(ext, fallback='application/octet-stream')
+    module_function def mime_type(ext, fallback='application/octet-stream')
       MIME_TYPES.fetch(ext.to_s.downcase, fallback)
     end
-    module_function :mime_type
 
     # Returns true if the given value is a mime match for the given mime match
     # specification, false otherwise.
@@ -24,14 +23,13 @@ module Rack
     #    Rack::Mime.match?('text/html', 'text/*') => true
     #    Rack::Mime.match?('text/plain', '*') => true
     #    Rack::Mime.match?('text/html', 'application/json') => false
-
-    def match?(value, matcher)
+    module_function def match?(value, matcher)
       v1, v2 = value.split('/', 2)
       m1, m2 = matcher.split('/', 2)
 
       (m1 == '*' || v1 == m1) && (m2.nil? || m2 == '*' || m2 == v2)
     end
-    module_function :match?
+
 
     # List of most common mime-types, selected various sources
     # according to their usefulness in a webserving scope for Ruby

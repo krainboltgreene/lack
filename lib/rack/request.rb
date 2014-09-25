@@ -354,36 +354,36 @@ module Rack
       return reject_trusted_ip_addresses(forwarded_ips).last || @env["REMOTE_ADDR"]
     end
 
-    protected
-      def split_ip_addresses(ip_addresses)
-        ip_addresses ? ip_addresses.strip.split(/[,\s]+/) : []
-      end
 
-      def reject_trusted_ip_addresses(ip_addresses)
-        ip_addresses.reject { |ip| trusted_proxy?(ip) }
-      end
+    protected def split_ip_addresses(ip_addresses)
+      ip_addresses ? ip_addresses.strip.split(/[,\s]+/) : []
+    end
 
-      def parse_query(qs)
-        Utils.parse_nested_query(qs, '&')
-      end
+    protected def reject_trusted_ip_addresses(ip_addresses)
+      ip_addresses.reject { |ip| trusted_proxy?(ip) }
+    end
 
-      def parse_multipart(env)
-        Rack::Multipart.parse_multipart(env)
-      end
+    protected def parse_query(qs)
+      Utils.parse_nested_query(qs, '&')
+    end
 
-      def parse_http_accept_header(header)
-        header.to_s.split(/\s*,\s*/).map do |part|
-          attribute, parameters = part.split(/\s*;\s*/, 2)
-          quality = 1.0
-          if parameters and /\Aq=([\d.]+)/ =~ parameters
-            quality = $1.to_f
-          end
-          [attribute, quality]
+    protected def parse_multipart(env)
+      Rack::Multipart.parse_multipart(env)
+    end
+
+    protected def parse_http_accept_header(header)
+      header.to_s.split(/\s*,\s*/).map do |part|
+        attribute, parameters = part.split(/\s*;\s*/, 2)
+        quality = 1.0
+        if parameters and /\Aq=([\d.]+)/ =~ parameters
+          quality = $1.to_f
         end
+        [attribute, quality]
       end
+    end
 
-  private
-    def strip_doublequotes(s)
+
+    private def strip_doublequotes(s)
       if s[0] == ?" && s[-1] == ?"
         s[1..-2]
       else
