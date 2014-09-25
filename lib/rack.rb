@@ -14,19 +14,6 @@ require "time"
 require "uri/common"
 
 module Rack
-  # The Rack protocol version number implemented.
-  VERSION = [1,2]
-
-  # Return the Rack protocol version as a dotted string.
-  def self.version
-    VERSION.join(".")
-  end
-
-  # Return the Rack release as a dotted string.
-  def self.release
-    "1.5"
-  end
-
   require_relative "rack/version"
   require_relative "rack/body_proxy"
   require_relative "rack/builder"
