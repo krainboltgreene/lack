@@ -1,21 +1,20 @@
 require 'webrick'
 require 'stringio'
-require 'rack/content_length'
 
 # This monkey patch allows for applications to perform their own chunking
-# through WEBrick::HTTPResponse iff rack is set to true.
+# through WEBrick::HTTPResponse if rack is set to true.
 class WEBrick::HTTPResponse
   attr_accessor :rack
 
   alias _rack_setup_header setup_header
   def setup_header
-    app_chunking = rack && @header['transfer-encoding'] == 'chunked'
-
-    @chunked = app_chunking if app_chunking
-
-    _rack_setup_header
-
-    @chunked = false if app_chunking
+    if rack && @header["transfer-encoding"] == "chunked"
+      @chunked = true
+      _rack_setup_header
+      @chunked = false
+    else
+      _rack_setup_header
+    end
   end
 end
 
@@ -23,8 +22,8 @@ module Rack
   module Handler
     class WEBrick < ::WEBrick::HTTPServlet::AbstractServlet
       def self.run(app, options={})
-        environment  = ENV['RACK_ENV'] || 'development'
-        default_host = environment == 'development' ? 'localhost' : '0.0.0.0'
+        environment  = ENV["RACK_ENV"] || "development"
+        default_host = environment == "development" ? "localhost" : "0.0.0.0"
 
         options[:BindAddress] = options.delete(:Host) || default_host
         options[:Port] ||= 8080
@@ -36,8 +35,8 @@ module Rack
       end
 
       def self.valid_options
-        environment  = ENV['RACK_ENV'] || 'development'
-        default_host = environment == 'development' ? 'localhost' : '0.0.0.0'
+        environment  = ENV["RACK_ENV"] || "development"
+        default_host = environment == "development" ? "localhost" : "0.0.0.0"
 
         {
           "Host=HOST" => "Hostname to listen on (default: #{default_host})",

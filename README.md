@@ -1,3 +1,4 @@
+
 = Rack, a modular Ruby webserver interface {<img src="https://secure.travis-ci.org/rack/rack.svg" alt="Build Status" />}[http://travis-ci.org/rack/rack] {<img src="https://gemnasium.com/rack/rack.svg" alt="Dependency Status" />}[https://gemnasium.com/rack/rack]
 
 Rack provides a minimal, modular and adaptable interface for developing
@@ -11,30 +12,19 @@ which all Rack applications should conform to.
 
 == Supported web servers
 
-The included *handlers* connect all kinds of web servers to Rack:
-* Mongrel
-* EventedMongrel
-* SwiftipliedMongrel
-* WEBrick
-* FCGI
-* CGI
-* SCGI
-* LiteSpeed
-* Thin
-
 These web servers include Rack handlers in their distributions:
-* Ebb
-* Fuzed
-* Glassfish v3
-* Phusion Passenger (which is mod_rack for Apache and for nginx)
-* Puma
-* Rainbows!
-* Reel
-* Unicorn
-* unixrack
-* uWSGI
-* yahns
-* Zbatery
+  * Ebb
+  * Fuzed
+  * Glassfish v3
+  * Phusion Passenger (which is mod_rack for Apache and for nginx)
+  * Puma
+  * Rainbows!
+  * Reel
+  * Unicorn
+  * unixrack
+  * uWSGI
+  * yahns
+  * Zbatery
 
 Any valid Rack app will run the same on all these handlers, without
 changing anything.
@@ -60,17 +50,6 @@ These frameworks include Rack adapters in their distributions:
 * Wee
 * ... and many others.
 
-== Available middleware
-
-Between the server and the framework, Rack can be customized to your
-applications needs using middleware, for example:
-* Rack::URLMap, to route to multiple applications inside the same process.
-* Rack::CommonLogger, for creating Apache-style logfiles.
-* Rack::ShowException, for catching unhandled exceptions and
-  presenting them in a nice and helpful way with clickable backtrace.
-* Rack::File, for serving static files.
-* ...many others!
-
 All these components use the same interface, which is described in
 detail in the Rack specification.  These optional components can be
 used in any way you wish.
@@ -88,14 +67,6 @@ over:
 * Rack::MockRequest and Rack::MockResponse for efficient and quick
   testing of Rack application without real HTTP round-trips.
 
-== rack-contrib
-
-The plethora of useful middleware created the need for a project that
-collects fresh Rack middleware.  rack-contrib includes a variety of
-add-on components for Rack and it is easy to contribute new modules.
-
-* http://github.com/rack/rack-contrib
-
 == rackup
 
 rackup is a useful tool for running Rack applications, which uses the
@@ -106,30 +77,11 @@ rackup automatically figures out the environment it is run in, and
 runs your application as FastCGI, CGI, or standalone with Mongrel or
 WEBrick---all from the same configuration.
 
-== Quick start
-
-Try the lobster!
-
-Either with the embedded WEBrick starter:
-
-    ruby -Ilib lib/rack/lobster.rb
-
-Or with rackup:
-
-    bin/rackup -Ilib example/lobster.ru
-
-By default, the lobster is found at http://localhost:9292.
-
 == Installing with RubyGems
 
 A Gem of Rack is available at rubygems.org.  You can install it with:
 
     gem install rack
-
-I also provide a local mirror of the gems (and development snapshots)
-at my site:
-
-    gem install rack --source http://chneukirchen.org/releases/gems/
 
 == Running the tests
 
@@ -144,42 +96,6 @@ Or:
 There are two rake-based test tasks:
 
     rake test       tests all the fast tests (no Handlers or Adapters)
-    rake fulltest   runs all the tests
-
-The fast testsuite has no dependencies outside of the core Ruby
-installation and bacon.
-
-To run the test suite completely, you need:
-
-  * fcgi
-  * memcache-client
-  * mongrel
-  * thin
-
-The full set of tests test FCGI access with lighttpd (on port
-9203) so you will need lighttpd installed as well as the FCGI
-libraries and the fcgi gem:
-
-Download and install lighttpd:
-
-    http://www.lighttpd.net/download
-
-Installing the FCGI libraries:
-
-    curl -O http://www.fastcgi.com/dist/fcgi-2.4.0.tar.gz
-    tar xzvf fcgi-2.4.0.tar.gz
-    cd fcgi-2.4.0
-    ./configure --prefix=/usr/local
-    make
-    sudo make install
-    cd ..
-
-Installing the Ruby fcgi gem:
-
-    gem install fcgi
-
-Furthermore, to test Memcache sessions, you need memcached (will be
-run on port 11211) and memcache-client installed.
 
 == History
 
@@ -627,4 +543,3 @@ rack-devel mailing list:: <http://groups.google.com/group/rack-devel>
 Rack's Rubyforge project:: <http://rubyforge.org/projects/rack>
 
 Christian Neukirchen:: <http://chneukirchen.org/>
-

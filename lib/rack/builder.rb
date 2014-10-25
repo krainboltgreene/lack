@@ -42,16 +42,18 @@ module Rack
         require config
         app = Object.const_get(::File.basename(config, '.rb').capitalize)
       end
-      return app, options
+      [app, options]
     end
 
     def self.new_from_string(builder_script, file="(rackup)")
-      eval "Rack::Builder.new {\n" + builder_script + "\n}.to_app",
-        TOPLEVEL_BINDING, file, 0
+      eval "Rack::Builder.new {\n" + builder_script + "\n}.to_app", TOPLEVEL_BINDING, file, 0
     end
 
     def initialize(default_app = nil,&block)
-      @use, @map, @run, @warmup = [], nil, default_app, nil
+      @use = []
+      @map = nil
+      @run = default_app
+      @warmup = nil
       instance_eval(&block) if block_given?
     end
 

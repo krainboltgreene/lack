@@ -3,9 +3,9 @@ module Rack
   #
   # Usually, Rack::Request#POST takes care of calling this.
   module Multipart
-    autoload :UploadedFile, 'rack/multipart/uploaded_file'
-    autoload :Parser, 'rack/multipart/parser'
-    autoload :Generator, 'rack/multipart/generator'
+    require_relative "multipart/uploaded_file"
+    require_relative "multipart/parser"
+    require_relative "multipart/generator"
 
     EOL = "\r\n"
     MULTIPART_BOUNDARY = "AaB03x"
@@ -20,15 +20,12 @@ module Rack
     MULTIPART_CONTENT_DISPOSITION = /Content-Disposition:.*\s+name="?([^\";]*)"?/ni
     MULTIPART_CONTENT_ID = /Content-ID:\s*([^#{EOL}]*)/ni
 
-    class << self
-      def parse_multipart(env)
-        Parser.create(env).parse
-      end
-
-      def build_multipart(params, first = true)
-        Generator.new(params, first).dump
-      end
+    def self.parse_multipart(env)
+      Parser.create(env).parse
     end
 
+    def self.build_multipart(params, first = true)
+      Generator.new(params, first).dump
+    end
   end
 end

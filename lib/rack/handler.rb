@@ -1,19 +1,17 @@
 module Rack
   # *Handlers* connect web servers with Rack.
   #
-  # Rack includes Handlers for Thin, WEBrick, FastCGI, CGI, SCGI
-  # and LiteSpeed.
-  #
   # Handlers usually are activated by calling <tt>MyHandler.run(myapp)</tt>.
   # A second optional hash can be passed to include server-specific
   # configuration.
   module Handler
+    require_relative "handler/webrick"
     def self.get(server)
       return unless server
       server = server.to_s
 
       unless @handlers.include? server
-        load_error = try_require('rack/handler', server)
+        load_error = try_require("rack/handler", server)
       end
 
       if klass = @handlers[server]
@@ -26,37 +24,12 @@ module Rack
       raise load_error || name_error
     end
 
-    # Select first available Rack handler given an `Array` of server names.
-    # Raises `LoadError` if no handler was found.
-    #
-    #   > pick ['thin', 'webrick']
-    #   => Rack::Handler::WEBrick
-    def self.pick(server_names)
-      server_names = Array(server_names)
-      server_names.each do |server_name|
-        begin
-          return get(server_name.to_s)
-        rescue LoadError, NameError
-        end
-      end
-
-      raise LoadError, "Couldn't find handler for: #{server_names.join(', ')}."
-    end
-
     def self.default(options = {})
       # Guess.
-      if ENV.include?("PHP_FCGI_CHILDREN")
-        # We already speak FastCGI
-        options.delete :File
-        options.delete :Port
-
-        Rack::Handler::FastCGI
-      elsif ENV.include?("REQUEST_METHOD")
-        Rack::Handler::CGI
-      elsif ENV.include?("RACK_HANDLER")
-        self.get(ENV["RACK_HANDLER"])
+      if ENV.include?("RACK_HANDLER")
+        get(ENV["RACK_HANDLER"])
       else
-        pick ['thin', 'puma', 'webrick']
+        "webrick"
       end
     end
 
@@ -85,25 +58,6 @@ module Rack
       @handlers ||= {}
       @handlers[server.to_s] = klass.to_s
     end
-
-    autoload :CGI, "rack/handler/cgi"
-    autoload :FastCGI, "rack/handler/fastcgi"
-    autoload :Mongrel, "rack/handler/mongrel"
-    autoload :EventedMongrel, "rack/handler/evented_mongrel"
-    autoload :SwiftipliedMongrel, "rack/handler/swiftiplied_mongrel"
-    autoload :WEBrick, "rack/handler/webrick"
-    autoload :LSWS, "rack/handler/lsws"
-    autoload :SCGI, "rack/handler/scgi"
-    autoload :Thin, "rack/handler/thin"
-
-    register 'cgi', 'Rack::Handler::CGI'
-    register 'fastcgi', 'Rack::Handler::FastCGI'
-    register 'mongrel', 'Rack::Handler::Mongrel'
-    register 'emongrel', 'Rack::Handler::EventedMongrel'
-    register 'smongrel', 'Rack::Handler::SwiftipliedMongrel'
-    register 'webrick', 'Rack::Handler::WEBrick'
-    register 'lsws', 'Rack::Handler::LSWS'
-    register 'scgi', 'Rack::Handler::SCGI'
-    register 'thin', 'Rack::Handler::Thin'
+    register "webrick", "Rack::Handler::WEBrick"
   end
 end

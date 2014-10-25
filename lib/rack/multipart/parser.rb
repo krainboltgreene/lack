@@ -1,4 +1,3 @@
-require 'rack/utils'
 
 module Rack
   module Multipart
@@ -8,12 +7,12 @@ module Rack
       DUMMY = Struct.new(:parse).new
 
       def self.create(env)
-        return DUMMY unless env['CONTENT_TYPE'] =~ MULTIPART
+        return DUMMY unless env["CONTENT_TYPE"] =~ MULTIPART
 
-        io = env['rack.input']
+        io = env["rack.input"]
         io.rewind
 
-        content_length = env['CONTENT_LENGTH']
+        content_length = env["CONTENT_LENGTH"]
         content_length = content_length.to_i if content_length
 
         new($1, io, content_length, env)
@@ -82,7 +81,7 @@ module Rack
           raise EOFError, "bad content body" unless content
           @buf << content
 
-          while @buf.gsub!(/\A([^\n]*\n)/, '')
+          while @buf.gsub!(/\A([^\n]*\n)/, "")
             read_buffer = $1
             return if read_buffer == full_boundary
           end
@@ -93,7 +92,7 @@ module Rack
 
       def get_current_head_and_filename_and_content_type_and_name_and_body
         head = nil
-        body = ''
+        body = ""
 
         if body.respond_to? :force_encoding
           body.force_encoding Encoding::ASCII_8BIT
@@ -118,7 +117,7 @@ module Rack
 
             if filename
               extname = ::File.extname(filename)
-              (@env['rack.tempfiles'] ||= []) << body = Tempfile.new(["RackMultipart", extname])
+              (@env["rack.tempfiles"] ||= []) << body = Tempfile.new(["RackMultipart", extname])
               body.binmode  if body.respond_to?(:binmode)
             end
 
@@ -144,7 +143,7 @@ module Rack
         filename = nil
         case head
         when RFC2183
-          filename = Hash[head.scan(DISPPARM)]['filename']
+          filename = Hash[head.scan(DISPPARM)]["filename"]
           filename = $1 if filename and filename =~ /^"(.*)"$/
         when BROKEN_QUOTED, BROKEN_UNQUOTED
           filename = $1
@@ -185,13 +184,13 @@ module Rack
           encoding = Encoding::UTF_8
 
           if content_type
-            list         = content_type.split(';')
+            list         = content_type.split(";")
             type_subtype = list.first
             type_subtype.strip!
             if TEXT_PLAIN == type_subtype
               rest         = list.drop 1
               rest.each do |param|
-                k,v = param.split('=', 2)
+                k,v = param.split("=", 2)
                 k.strip!
                 v.strip!
                 encoding = Encoding.find v if k == CHARSET

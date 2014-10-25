@@ -1,130 +1,6 @@
-require 'optparse'
-
-
 module Rack
-
   class Server
-
-    class Options
-      def parse!(args)
-        options = {}
-        opt_parser = OptionParser.new("", 24, '  ') do |opts|
-          opts.banner = "Usage: rackup [ruby options] [rack options] [rackup config]"
-
-          opts.separator ""
-          opts.separator "Ruby options:"
-
-          lineno = 1
-          opts.on("-e", "--eval LINE", "evaluate a LINE of code") { |line|
-            eval line, TOPLEVEL_BINDING, "-e", lineno
-            lineno += 1
-          }
-
-          opts.on("-b", "--builder BUILDER_LINE", "evaluate a BUILDER_LINE of code as a builder script") { |line|
-            options[:builder] = line
-          }
-
-          opts.on("-d", "--debug", "set debugging flags (set $DEBUG to true)") {
-            options[:debug] = true
-          }
-          opts.on("-w", "--warn", "turn warnings on for your script") {
-            options[:warn] = true
-          }
-          opts.on("-q", "--quiet", "turn off logging") {
-            options[:quiet] = true
-          }
-
-          opts.on("-I", "--include PATH",
-                  "specify $LOAD_PATH (may be used more than once)") { |path|
-            (options[:include] ||= []).concat(path.split(":"))
-          }
-
-          opts.on("-r", "--require LIBRARY",
-                  "require the library, before executing your script") { |library|
-            options[:require] = library
-          }
-
-          opts.separator ""
-          opts.separator "Rack options:"
-          opts.on("-s", "--server SERVER", "serve using SERVER (thin/puma/webrick/mongrel)") { |s|
-            options[:server] = s
-          }
-
-          opts.on("-o", "--host HOST", "listen on HOST (default: 0.0.0.0)") { |host|
-            options[:Host] = host
-          }
-
-          opts.on("-p", "--port PORT", "use PORT (default: 9292)") { |port|
-            options[:Port] = port
-          }
-
-          opts.on("-O", "--option NAME[=VALUE]", "pass VALUE to the server as option NAME. If no VALUE, sets it to true. Run '#{$0} -s SERVER -h' to get a list of options for SERVER") { |name|
-            name, value = name.split('=', 2)
-            value = true if value.nil?
-            options[name.to_sym] = value
-          }
-
-          opts.on("-E", "--env ENVIRONMENT", "use ENVIRONMENT for defaults (default: development)") { |e|
-            options[:environment] = e
-          }
-
-          opts.on("-D", "--daemonize", "run daemonized in the background") { |d|
-            options[:daemonize] = d ? true : false
-          }
-
-          opts.on("-P", "--pid FILE", "file to store PID") { |f|
-            options[:pid] = ::File.expand_path(f)
-          }
-
-          opts.separator ""
-          opts.separator "Common options:"
-
-          opts.on_tail("-h", "-?", "--help", "Show this message") do
-            puts opts
-            puts handler_opts(options)
-
-            exit
-          end
-
-          opts.on_tail("--version", "Show version") do
-            puts "Rack #{Rack.version} (Release: #{Rack.release})"
-            exit
-          end
-        end
-
-        begin
-          opt_parser.parse! args
-        rescue OptionParser::InvalidOption => e
-          warn e.message
-          abort opt_parser.to_s
-        end
-
-        options[:config] = args.last if args.last
-        options
-      end
-
-      def handler_opts(options)
-        begin
-          info = []
-          server = Rack::Handler.get(options[:server]) || Rack::Handler.default(options)
-          if server && server.respond_to?(:valid_options)
-            info << ""
-            info << "Server-specific options for #{server.name}:"
-
-            has_options = false
-            server.valid_options.each do |name, description|
-              next if name.to_s.match(/^(Host|Port)[^a-zA-Z]/) # ignore handler's host and port options, we do our own.
-              info << "  -O %-21s %s" % [name, description]
-              has_options = true
-            end
-            return "" if !has_options
-          end
-          info.join("\n")
-        rescue NameError
-          return "Warning: Could not find handler specified (#{options[:server] || 'default'}) to determine handler-specific options"
-        end
-      end
-    end
+    require_relative "server/options"
 
     # Start a new rack server (like running rackup). This will parse ARGV and
     # provide standard ARGV rackup options, defaulting to load 'config.ru'.
@@ -208,43 +84,41 @@ module Rack
       @app ||= options[:builder] ? build_app_from_string : build_app_and_options_from_config
     end
 
-    class << self
-      def logging_middleware
-        lambda { |server|
-          server.server.name =~ /CGI/ || server.options[:quiet] ? nil : [Rack::CommonLogger, $stderr]
-        }
-      end
+    def self.logging_middleware
+      lambda { |server|
+        server.server.name =~ /CGI/ || server.options[:quiet] ? nil : [Rack::CommonLogger, $stderr]
+      }
+    end
 
-      def default_middleware_by_environment
-        m = Hash.new {|h,k| h[k] = []}
-        m["deployment"] = [
-          [Rack::ContentLength],
-          [Rack::Chunked],
-          logging_middleware,
-          [Rack::TempfileReaper]
-        ]
-        m["development"] = [
-          [Rack::ContentLength],
-          [Rack::Chunked],
-          logging_middleware,
-          [Rack::ShowExceptions],
-          [Rack::Lint],
-          [Rack::TempfileReaper]
-        ]
+    def self.default_middleware_by_environment
+      m = Hash.new {|h,k| h[k] = []}
+      m["deployment"] = [
+        [Rack::ContentLength],
+        [Rack::Chunked],
+        logging_middleware,
+        [Rack::TempfileReaper]
+      ]
+      m["development"] = [
+        [Rack::ContentLength],
+        [Rack::Chunked],
+        logging_middleware,
+        [Rack::ShowExceptions],
+        [Rack::Lint],
+        [Rack::TempfileReaper]
+      ]
 
-        m
-      end
+      m
+    end
 
-      def middleware
-        default_middleware_by_environment
-      end
+    def self.middleware
+      default_middleware_by_environment
     end
 
     def middleware
       self.class.middleware
     end
 
-    def start &blk
+    def start(&block)
       if options[:warn]
         $-w = true
       end
@@ -283,105 +157,102 @@ module Rack
         end
       end
 
-      server.run wrapped_app, options, &blk
+      server.run wrapped_app, options, &block
     end
 
     def server
       @_server ||= Rack::Handler.get(options[:server]) || Rack::Handler.default(options)
     end
 
-    private
-      def build_app_and_options_from_config
-        if !::File.exist? options[:config]
-          abort "configuration #{options[:config]} not found"
-        end
-
-        app, options = Rack::Builder.parse_file(self.options[:config], opt_parser)
-        self.options.merge! options
-        app
+    private def build_app_and_options_from_config
+      if !::File.exist? options[:config]
+        abort "configuration #{options[:config]} not found"
       end
 
-      def build_app_from_string
-        Rack::Builder.new_from_string(self.options[:builder])
+      app, options = Rack::Builder.parse_file(self.options[:config], opt_parser)
+      self.options.merge! options
+      app
+    end
+
+    private def build_app_from_string
+      Rack::Builder.new_from_string(self.options[:builder])
+    end
+
+    private def parse_options(args)
+      options = default_options
+
+      # Don't evaluate CGI ISINDEX parameters.
+      # http://www.meb.uni-bonn.de/docs/cgi/cl.html
+      args.clear if ENV.include?("REQUEST_METHOD")
+
+      options.merge! opt_parser.parse!(args)
+      options[:config] = ::File.expand_path(options[:config])
+      ENV["RACK_ENV"] = options[:environment]
+      options
+    end
+
+    private def opt_parser
+      Options.new
+    end
+
+    private def build_app(app)
+      middleware[options[:environment]].reverse_each do |middleware|
+        middleware = middleware.call(self) if middleware.respond_to?(:call)
+        next unless middleware
+        klass, *args = middleware
+        app = klass.new(app, *args)
       end
+      app
+    end
 
-      def parse_options(args)
-        options = default_options
+    private def wrapped_app
+      @wrapped_app ||= build_app app
+    end
 
-        # Don't evaluate CGI ISINDEX parameters.
-        # http://www.meb.uni-bonn.de/docs/cgi/cl.html
-        args.clear if ENV.include?("REQUEST_METHOD")
-
-        options.merge! opt_parser.parse!(args)
-        options[:config] = ::File.expand_path(options[:config])
-        ENV["RACK_ENV"] = options[:environment]
-        options
+    private def daemonize_app
+      if RUBY_VERSION < "1.9"
+        exit if fork
+        Process.setsid
+        exit if fork
+        Dir.chdir "/"
+        STDIN.reopen "/dev/null"
+        STDOUT.reopen "/dev/null", "a"
+        STDERR.reopen "/dev/null", "a"
+      else
+        Process.daemon
       end
+    end
 
-      def opt_parser
-        Options.new
+    private def write_pid
+      ::File.open(options[:pid], ::File::CREAT | ::File::EXCL | ::File::WRONLY ){ |f| f.write("#{Process.pid}") }
+      at_exit { ::File.delete(options[:pid]) if ::File.exist?(options[:pid]) }
+    rescue Errno::EEXIST
+      check_pid!
+      retry
+    end
+
+    private def check_pid!
+      case pidfile_process_status
+      when :running, :not_owned
+        $stderr.puts "A server is already running. Check #{options[:pid]}."
+        exit(1)
+      when :dead
+        ::File.delete(options[:pid])
       end
+    end
 
-      def build_app(app)
-        middleware[options[:environment]].reverse_each do |middleware|
-          middleware = middleware.call(self) if middleware.respond_to?(:call)
-          next unless middleware
-          klass, *args = middleware
-          app = klass.new(app, *args)
-        end
-        app
-      end
+    private def pidfile_process_status
+      return :exited unless ::File.exist?(options[:pid])
 
-      def wrapped_app
-        @wrapped_app ||= build_app app
-      end
+      pid = ::File.read(options[:pid]).to_i
+      return :dead if pid == 0
 
-      def daemonize_app
-        if RUBY_VERSION < "1.9"
-          exit if fork
-          Process.setsid
-          exit if fork
-          Dir.chdir "/"
-          STDIN.reopen "/dev/null"
-          STDOUT.reopen "/dev/null", "a"
-          STDERR.reopen "/dev/null", "a"
-        else
-          Process.daemon
-        end
-      end
-
-      def write_pid
-        ::File.open(options[:pid], ::File::CREAT | ::File::EXCL | ::File::WRONLY ){ |f| f.write("#{Process.pid}") }
-        at_exit { ::File.delete(options[:pid]) if ::File.exist?(options[:pid]) }
-      rescue Errno::EEXIST
-        check_pid!
-        retry
-      end
-
-      def check_pid!
-        case pidfile_process_status
-        when :running, :not_owned
-          $stderr.puts "A server is already running. Check #{options[:pid]}."
-          exit(1)
-        when :dead
-          ::File.delete(options[:pid])
-        end
-      end
-
-      def pidfile_process_status
-        return :exited unless ::File.exist?(options[:pid])
-
-        pid = ::File.read(options[:pid]).to_i
-        return :dead if pid == 0
-
-        Process.kill(0, pid)
-        :running
-      rescue Errno::ESRCH
-        :dead
-      rescue Errno::EPERM
-        :not_owned
-      end
-
+      Process.kill(0, pid)
+      :running
+    rescue Errno::ESRCH
+      :dead
+    rescue Errno::EPERM
+      :not_owned
+    end
   end
-
 end
