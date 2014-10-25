@@ -1,5 +1,7 @@
+lack
+----
 
-= Rack, a modular Ruby webserver interface {<img src="https://secure.travis-ci.org/rack/rack.svg" alt="Build Status" />}[http://travis-ci.org/rack/rack] {<img src="https://gemnasium.com/rack/rack.svg" alt="Dependency Status" />}[https://gemnasium.com/rack/rack]
+A minimal version of the modular Ruby webserver interface.
 
 Rack provides a minimal, modular and adaptable interface for developing
 web applications in Ruby.  By wrapping HTTP requests and responses in
@@ -10,9 +12,12 @@ middleware) into a single method call.
 The exact details of this are described in the Rack specification,
 which all Rack applications should conform to.
 
-== Supported web servers
+
+Supported web servers
+=====================
 
 These web servers include Rack handlers in their distributions:
+
   * Ebb
   * Fuzed
   * Glassfish v3
@@ -29,7 +34,9 @@ These web servers include Rack handlers in their distributions:
 Any valid Rack app will run the same on all these handlers, without
 changing anything.
 
-== Supported web frameworks
+
+Supported web frameworks
+========================
 
 These frameworks include Rack adapters in their distributions:
 * Camping
@@ -54,7 +61,9 @@ All these components use the same interface, which is described in
 detail in the Rack specification.  These optional components can be
 used in any way you wish.
 
-== Convenience
+
+Convenience
+===========
 
 If you want to develop outside of existing frameworks, implement your
 own ones, or develop middleware, Rack provides many helpers to create
@@ -67,7 +76,9 @@ over:
 * Rack::MockRequest and Rack::MockResponse for efficient and quick
   testing of Rack application without real HTTP round-trips.
 
-== rackup
+
+rackup
+======
 
 rackup is a useful tool for running Rack applications, which uses the
 Rack::Builder DSL to configure middleware and build up applications
@@ -77,13 +88,17 @@ rackup automatically figures out the environment it is run in, and
 runs your application as FastCGI, CGI, or standalone with Mongrel or
 WEBrick---all from the same configuration.
 
-== Installing with RubyGems
+
+Installing with RubyGems
+========================
 
 A Gem of Rack is available at rubygems.org.  You can install it with:
 
     gem install rack
 
-== Running the tests
+
+Running the tests
+=================
 
 Testing Rack requires the bacon testing framework:
 
@@ -97,7 +112,9 @@ There are two rake-based test tasks:
 
     rake test       tests all the fast tests (no Handlers or Adapters)
 
-== History
+
+History
+=======
 
 * March 3rd, 2007: First public release 0.1.
 
@@ -445,7 +462,9 @@ There are two rake-based test tasks:
   * Fix a race condition that could result in overwritten pidfiles
   * Various documentation additions
 
-== Contact
+
+Contact
+=======
 
 Please post bugs, suggestions and patches to
 the bug tracker at <http://github.com/rack/rack/issues>.
@@ -513,7 +532,9 @@ would like to thank:
   Rack builds up on.
 * All bug reporters and patch contributors not mentioned above.
 
-== Copyright
+
+Copyright
+=========
 
 Copyright (C) 2007, 2008, 2009, 2010 Christian Neukirchen <http://purl.org/net/chneukirchen>
 
@@ -534,7 +555,9 @@ THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-== Links
+
+Links
+=====
 
 Rack:: <http://rack.github.io/>
 Official Rack repositories:: <http://github.com/rack>
