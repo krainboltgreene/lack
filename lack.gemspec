@@ -6,13 +6,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "rack/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "rack"
+  spec.name          = "lack"
   spec.version       = Rack::VERSION
   spec.authors       = ["Christian Neukirchen", "Kurtis Rainbolt-Greene"]
   spec.email         = ["chneukirchen@gmail.com", "me@kurtisrainboltgreene.name"]
   spec.summary       = %q{A modular Ruby webserver interface.}
   spec.description   = spec.summary
-  spec.homepage      = "http://krainboltgreene.github.io/blankgem"
+  spec.homepage      = "http://krainboltgreene.github.io/lack"
   spec.license       = "MIT"
 
   spec.files         = Dir["lib/**/*"]
