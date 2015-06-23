@@ -7,7 +7,7 @@ require "rack/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "lack"
-  spec.version       = Rack::VERSION
+  spec.version       = Lack::VERSION
   spec.authors       = ["Christian Neukirchen", "Kurtis Rainbolt-Greene"]
   spec.email         = ["chneukirchen@gmail.com", "me@kurtisrainboltgreene.name"]
   spec.summary       = %q{A modular Ruby webserver interface.}

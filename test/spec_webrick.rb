@@ -3,15 +3,15 @@ require File.expand_path('../testrequest', __FILE__)
 
 Thread.abort_on_exception = true
 
-describe Rack::Handler::WEBrick do
+describe Lack::Handler::WEBrick do
   extend TestRequest::Helpers
 
   @server = WEBrick::HTTPServer.new(:Host => @host='127.0.0.1',
                                     :Port => @port=9202,
                                     :Logger => WEBrick::Log.new(nil, WEBrick::BasicLog::WARN),
                                     :AccessLog => [])
-  @server.mount "/test", Rack::Handler::WEBrick,
-    Rack::Lint.new(TestRequest.new)
+  @server.mount "/test", Lack::Handler::WEBrick,
+    Lack::Lint.new(TestRequest.new)
   Thread.new { @server.start }
   trap(:INT) { @server.shutdown }
 
@@ -87,9 +87,9 @@ describe Rack::Handler::WEBrick do
   end
 
   should "correctly set cookies" do
-    @server.mount "/cookie-test", Rack::Handler::WEBrick,
-    Rack::Lint.new(lambda { |req|
-                     res = Rack::Response.new
+    @server.mount "/cookie-test", Lack::Handler::WEBrick,
+    Lack::Lint.new(lambda { |req|
+                     res = Lack::Response.new
                      res.set_cookie "one", "1"
                      res.set_cookie "two", "2"
                      res.finish
@@ -105,7 +105,7 @@ describe Rack::Handler::WEBrick do
   should "provide a .run" do
     block_ran = false
     catch(:done) {
-      Rack::Handler::WEBrick.run(lambda {},
+      Lack::Handler::WEBrick.run(lambda {},
                                  {
                                    :Host => '127.0.0.1',
                                    :Port => 9210,
@@ -122,8 +122,8 @@ describe Rack::Handler::WEBrick do
   end
 
   should "return repeated headers" do
-    @server.mount "/headers", Rack::Handler::WEBrick,
-    Rack::Lint.new(lambda { |req|
+    @server.mount "/headers", Lack::Handler::WEBrick,
+    Lack::Lint.new(lambda { |req|
         [
           401,
           { "Content-Type" => "text/plain",
@@ -139,7 +139,7 @@ describe Rack::Handler::WEBrick do
     }
   end
 
-  should "support Rack partial hijack" do
+  should "support Lack partial hijack" do
     io_lambda = lambda{ |io|
       5.times do
         io.write "David\r\n"
@@ -147,8 +147,8 @@ describe Rack::Handler::WEBrick do
       io.close
     }
 
-    @server.mount "/partial", Rack::Handler::WEBrick,
-    Rack::Lint.new(lambda{ |req|
+    @server.mount "/partial", Lack::Handler::WEBrick,
+    Lack::Lint.new(lambda{ |req|
       [
         200,
         {"rack.hijack" => io_lambda},
@@ -163,8 +163,8 @@ describe Rack::Handler::WEBrick do
   end
 
   should "produce correct HTTP semantics with and without app chunking" do
-    @server.mount "/chunked", Rack::Handler::WEBrick,
-    Rack::Lint.new(lambda{ |req|
+    @server.mount "/chunked", Lack::Handler::WEBrick,
+    Lack::Lint.new(lambda{ |req|
       [
         200,
         {"Transfer-Encoding" => "chunked"},

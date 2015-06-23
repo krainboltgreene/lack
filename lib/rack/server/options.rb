@@ -1,4 +1,4 @@
-module Rack
+module Lack
   class Server
     class Options
       def parse!(args)
@@ -41,7 +41,7 @@ module Rack
           end
 
           opts.separator ""
-          opts.separator "Rack options:"
+          opts.separator "Lack options:"
 
           opts.on("-s", "--server SERVER", "serve using SERVER (thin/puma/webrick/mongrel)") do |s|
             options[:server] = s
@@ -79,7 +79,7 @@ module Rack
           end
 
           opts.on_tail("--version", "Show version") do
-            puts "Rack #{Rack.version} (Release: #{Rack.release})"
+            puts "Lack #{Lack.version} (Release: #{Lack.release})"
             exit
           end
         end
@@ -98,7 +98,7 @@ module Rack
       def handler_opts(options)
         begin
           info = []
-          server = Rack::Handler.get(options[:server]) || Rack::Handler.default(options)
+          server = Lack::Handler.get(options[:server]) || Lack::Handler.default(options)
           if server && server.respond_to?(:valid_options)
             info << ""
             info << "Server-specific options for #{server.name}:"

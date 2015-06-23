@@ -1,9 +1,9 @@
-module Rack
-  # Rack::Request provides a convenient interface to a Rack
+module Lack
+  # Lack::Request provides a convenient interface to a Lack
   # environment.  It is stateless, the environment +env+ passed to the
   # constructor will be directly modified.
   #
-  #   req = Rack::Request.new(env)
+  #   req = Lack::Request.new(env)
   #   req.post?
   #   req.params["data"]
 
@@ -15,21 +15,46 @@ module Rack
       @env = env
     end
 
-    def body;            @env["rack.input"]                       end
-    def script_name;     @env["SCRIPT_NAME"].to_s                 end
-    def path_info;       @env["PATH_INFO"].to_s                   end
-    def request_method;  @env["REQUEST_METHOD"]                   end
-    def query_string;    @env["QUERY_STRING"].to_s                end
-    def content_length;  @env['CONTENT_LENGTH']                   end
+    def body
+      @env["rack.input"]
+    end
+
+    def script_name
+      @env["SCRIPT_NAME"].to_s
+    end
+
+    def path_info
+      @env["PATH_INFO"].to_s
+    end
+
+    def request_method
+      @env["REQUEST_METHOD"]
+    end
+
+    def query_string
+      @env["QUERY_STRING"].to_s
+    end
+
+    def content_length
+      @env['CONTENT_LENGTH']
+    end
 
     def content_type
       content_type = @env['CONTENT_TYPE']
       content_type.nil? || content_type.empty? ? nil : content_type
     end
 
-    def session;         @env['rack.session'] ||= {}              end
-    def session_options; @env['rack.session.options'] ||= {}      end
-    def logger;          @env['rack.logger']                      end
+    def session
+      @env['rack.session'] ||= {}
+    end
+
+    def session_options
+      @env['rack.session.options'] ||= {}
+    end
+
+    def logger
+      @env['rack.logger']
+    end
 
     # The media type (type/subtype) portion of the CONTENT_TYPE header
     # without any media type parameters. e.g., when CONTENT_TYPE is
@@ -111,34 +136,54 @@ module Rack
 
 
     # Checks the HTTP request method (or verb) to see if it was of type DELETE
-    def delete?;  request_method == "DELETE"  end
+    def delete?
+      request_method == "DELETE"
+    end
 
     # Checks the HTTP request method (or verb) to see if it was of type GET
-    def get?;     request_method == "GET"     end
+    def get?
+      request_method == "GET"
+    end
 
     # Checks the HTTP request method (or verb) to see if it was of type HEAD
-    def head?;    request_method == "HEAD"    end
+    def head?
+      request_method == "HEAD"
+    end
 
     # Checks the HTTP request method (or verb) to see if it was of type OPTIONS
-    def options?; request_method == "OPTIONS" end
+    def options?
+      request_method == "OPTIONS"
+    end
 
     # Checks the HTTP request method (or verb) to see if it was of type LINK
-    def link?;    request_method == "LINK"    end
+    def link?
+      request_method == "LINK"
+    end
 
     # Checks the HTTP request method (or verb) to see if it was of type PATCH
-    def patch?;   request_method == "PATCH"   end
+    def patch?
+      request_method == "PATCH"
+    end
 
     # Checks the HTTP request method (or verb) to see if it was of type POST
-    def post?;    request_method == "POST"    end
+    def post?
+      request_method == "POST"
+    end
 
     # Checks the HTTP request method (or verb) to see if it was of type PUT
-    def put?;     request_method == "PUT"     end
+    def put?
+      request_method == "PUT"
+    end
 
     # Checks the HTTP request method (or verb) to see if it was of type TRACE
-    def trace?;   request_method == "TRACE"   end
+    def trace?
+      request_method == "TRACE"
+    end
 
     # Checks the HTTP request method (or verb) to see if it was of type UNLINK
-    def unlink?;  request_method == "UNLINK"  end
+    def unlink?
+      request_method == "UNLINK"
+    end
 
 
     # The set of form-data media-types. Requests that do not indicate
@@ -302,7 +347,7 @@ module Rack
       #   the Cookie header such that those with more specific Path attributes
       #   precede those with less specific.  Ordering with respect to other
       #   attributes (e.g., Domain) is unspecified.
-      cookies = Utils.parse_query(string, ';,') { |s| Rack::Utils.unescape(s) rescue s }
+      cookies = Utils.parse_query(string, ';,') { |s| Lack::Utils.unescape(s) rescue s }
       cookies.each { |k,v| hash[k] = Array === v ? v.first : v }
       @env["rack.request.cookie_string"] = string
       hash
@@ -368,7 +413,7 @@ module Rack
     end
 
     protected def parse_multipart(env)
-      Rack::Multipart.parse_multipart(env)
+      Lack::Multipart.parse_multipart(env)
     end
 
     protected def parse_http_accept_header(header)

@@ -1,5 +1,5 @@
-module Rack
-  # Rack::Utils contains a grab-bag of useful methods for writing web
+module Lack
+  # Lack::Utils contains a grab-bag of useful methods for writing web
   # applications adopted from all kinds of Ruby libraries.
 
   module Utils
@@ -185,7 +185,7 @@ module Rack
       values = q_values(q_value_header)
 
       matches = values.map do |req_mime, quality|
-        match = available_mimes.find { |am| Rack::Mime.match?(am, req_mime) }
+        match = available_mimes.find { |am| Lack::Mime.match?(am, req_mime) }
         next unless match
         [match, quality]
       end.compact.sort_by do |match, quality|
@@ -629,7 +629,7 @@ module Rack
     end
     module_function :status_code
 
-    Multipart = Rack::Multipart
+    Multipart = Lack::Multipart
 
     PATH_SEPS = Regexp.union(*[::File::SEPARATOR, ::File::ALT_SEPARATOR].compact)
 

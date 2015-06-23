@@ -1,4 +1,4 @@
-module Rack
+module Lack
   module Mime
     # Returns String with mime type if found, otherwise use +fallback+.
     # +ext+ should be filename extension in the '.ext' format that
@@ -8,10 +8,10 @@ module Rack
     # Also see the documentation for MIME_TYPES
     #
     # Usage:
-    #     Rack::Mime.mime_type('.foo')
+    #     Lack::Mime.mime_type('.foo')
     #
     # This is a shortcut for:
-    #     Rack::Mime::MIME_TYPES.fetch('.foo', 'application/octet-stream')
+    #     Lack::Mime::MIME_TYPES.fetch('.foo', 'application/octet-stream')
 
     module_function def mime_type(ext, fallback='application/octet-stream')
       MIME_TYPES.fetch(ext.to_s.downcase, fallback)
@@ -20,9 +20,9 @@ module Rack
     # Returns true if the given value is a mime match for the given mime match
     # specification, false otherwise.
     #
-    #    Rack::Mime.match?('text/html', 'text/*') => true
-    #    Rack::Mime.match?('text/plain', '*') => true
-    #    Rack::Mime.match?('text/html', 'application/json') => false
+    #    Lack::Mime.match?('text/html', 'text/*') => true
+    #    Lack::Mime.match?('text/plain', '*') => true
+    #    Lack::Mime.match?('text/html', 'application/json') => false
     module_function def match?(value, matcher)
       v1, v2 = value.split('/', 2)
       m1, m2 = matcher.split('/', 2)
@@ -39,7 +39,7 @@ module Rack
     #
     #     require 'webrick/httputils'
     #     list = WEBrick::HTTPUtils.load_mime_types('/etc/mime.types')
-    #     Rack::Mime::MIME_TYPES.merge!(list)
+    #     Lack::Mime::MIME_TYPES.merge!(list)
     #
     # N.B. On Ubuntu the mime.types file does not include the leading period, so
     # users may need to modify the data before merging into the hash.
@@ -47,7 +47,7 @@ module Rack
     # To add the list mongrel provides, use:
     #
     #     require 'mongrel/handlers'
-    #     Rack::Mime::MIME_TYPES.merge!(Mongrel::DirHandler::MIME_TYPES)
+    #     Lack::Mime::MIME_TYPES.merge!(Mongrel::DirHandler::MIME_TYPES)
 
     MIME_TYPES = {
       ".123"       => "application/vnd.lotus-1-2-3",

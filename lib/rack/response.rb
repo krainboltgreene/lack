@@ -3,17 +3,17 @@ require 'rack/utils'
 require 'rack/body_proxy'
 require 'time'
 
-module Rack
-  # Rack::Response provides a convenient interface to create a Rack
+module Lack
+  # Lack::Response provides a convenient interface to create a Lack
   # response.
   #
   # It allows setting of headers and cookies, and provides useful
   # defaults (a OK response containing HTML).
   #
   # You can use Response#write to iteratively generate your response,
-  # but note that this is buffered by Rack::Response until you call
+  # but note that this is buffered by Lack::Response until you call
   # +finish+.  +finish+ however can take a block inside which calls to
-  # +write+ are synchronous with the Rack response.
+  # +write+ are synchronous with the Lack response.
   #
   # Your application's +call+ should end returning Response#finish.
 
@@ -95,7 +95,7 @@ module Rack
     #
     def write(str)
       s = str.to_s
-      @length += Rack::Utils.bytesize(s) unless @chunked
+      @length += Lack::Utils.bytesize(s) unless @chunked
       @writer.call s
 
       header["Content-Length"] = @length.to_s unless @chunked

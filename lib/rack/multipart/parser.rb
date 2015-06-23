@@ -1,5 +1,5 @@
 
-module Rack
+module Lack
   module Multipart
     class Parser
       BUFSIZE = 16384
@@ -117,7 +117,7 @@ module Rack
 
             if filename
               extname = ::File.extname(filename)
-              (@env["rack.tempfiles"] ||= []) << body = Tempfile.new(["RackMultipart", extname])
+              (@env["rack.tempfiles"] ||= []) << body = Tempfile.new(["LackMultipart", extname])
               body.binmode  if body.respond_to?(:binmode)
             end
 

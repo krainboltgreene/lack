@@ -3,20 +3,20 @@ lack
 
 A minimal version of the modular Ruby webserver interface.
 
-Rack provides a minimal, modular and adaptable interface for developing
+Lack provides a minimal, modular and adaptable interface for developing
 web applications in Ruby.  By wrapping HTTP requests and responses in
 the simplest way possible, it unifies and distills the API for web
 servers, web frameworks, and software in between (the so-called
 middleware) into a single method call.
 
-The exact details of this are described in the Rack specification,
-which all Rack applications should conform to.
+The exact details of this are described in the Lack specification,
+which all Lack applications should conform to.
 
 
 Supported web servers
 =====================
 
-These web servers include Rack handlers in their distributions:
+These web servers include Lack handlers in their distributions:
 
   * Ebb
   * Fuzed
@@ -31,14 +31,14 @@ These web servers include Rack handlers in their distributions:
   * yahns
   * Zbatery
 
-Any valid Rack app will run the same on all these handlers, without
+Any valid Lack app will run the same on all these handlers, without
 changing anything.
 
 
 Supported web frameworks
 ========================
 
-These frameworks include Rack adapters in their distributions:
+These frameworks include Lack adapters in their distributions:
 * Camping
 * Coset
 * Espresso
@@ -46,7 +46,7 @@ These frameworks include Rack adapters in their distributions:
 * Mack
 * Maveric
 * Merb
-* Racktools::SimpleApplication
+* Lacktools::SimpleApplication
 * Ramaze
 * Ruby on Rails
 * Rum
@@ -58,7 +58,7 @@ These frameworks include Rack adapters in their distributions:
 * ... and many others.
 
 All these components use the same interface, which is described in
-detail in the Rack specification.  These optional components can be
+detail in the Lack specification.  These optional components can be
 used in any way you wish.
 
 
@@ -66,22 +66,22 @@ Convenience
 ===========
 
 If you want to develop outside of existing frameworks, implement your
-own ones, or develop middleware, Rack provides many helpers to create
-Rack applications quickly and without doing the same web stuff all
+own ones, or develop middleware, Lack provides many helpers to create
+Lack applications quickly and without doing the same web stuff all
 over:
-* Rack::Request, which also provides query string parsing and
+* Lack::Request, which also provides query string parsing and
   multipart handling.
-* Rack::Response, for convenient generation of HTTP replies and
+* Lack::Response, for convenient generation of HTTP replies and
   cookie handling.
-* Rack::MockRequest and Rack::MockResponse for efficient and quick
-  testing of Rack application without real HTTP round-trips.
+* Lack::MockRequest and Lack::MockResponse for efficient and quick
+  testing of Lack application without real HTTP round-trips.
 
 
 rackup
 ======
 
-rackup is a useful tool for running Rack applications, which uses the
-Rack::Builder DSL to configure middleware and build up applications
+rackup is a useful tool for running Lack applications, which uses the
+Lack::Builder DSL to configure middleware and build up applications
 easily.
 
 rackup automatically figures out the environment it is run in, and
@@ -92,7 +92,7 @@ WEBrick---all from the same configuration.
 Installing with RubyGems
 ========================
 
-A Gem of Rack is available at rubygems.org.  You can install it with:
+A Gem of Lack is available at rubygems.org.  You can install it with:
 
     gem install rack
 
@@ -100,7 +100,7 @@ A Gem of Rack is available at rubygems.org.  You can install it with:
 Running the tests
 =================
 
-Testing Rack requires the bacon testing framework:
+Testing Lack requires the bacon testing framework:
 
     bundle install --without extra # to be able to run the fast tests
 
@@ -122,9 +122,9 @@ History
   * HTTP Basic authentication.
   * Cookie Sessions.
   * Static file handler.
-  * Improved Rack::Request.
-  * Improved Rack::Response.
-  * Added Rack::ShowStatus, for better default error messages.
+  * Improved Lack::Request.
+  * Improved Lack::Response.
+  * Added Lack::ShowStatus, for better default error messages.
   * Bug fixes in the Camping adapter.
   * Removed Rails adapter, was too alpha.
 
@@ -134,33 +134,33 @@ History
   * Pool sessions, by blink.
   * OpenID authentication, by blink.
   * :Port and :File options for opening FastCGI sockets, by blink.
-  * Last-Modified HTTP header for Rack::File, by blink.
-  * Rack::Builder#use now accepts blocks, by Corey Jewett.
+  * Last-Modified HTTP header for Lack::File, by blink.
+  * Lack::Builder#use now accepts blocks, by Corey Jewett.
     (See example/protectedlobster.ru)
   * HTTP status 201 can contain a Content-Type and a body now.
   * Many bugfixes, especially related to Cookie handling.
 
 * August 21st, 2008: Fourth public release 0.4.
-  * New middleware, Rack::Deflater, by Christoffer Sawicki.
+  * New middleware, Lack::Deflater, by Christoffer Sawicki.
   * OpenID authentication now needs ruby-openid 2.
   * New Memcache sessions, by blink.
   * Explicit EventedMongrel handler, by Joshua Peek <josh@joshpeek.com>
-  * Rack::Reloader is not loaded in rackup development mode.
+  * Lack::Reloader is not loaded in rackup development mode.
   * rackup can daemonize with -D.
   * Many bugfixes, especially for pool sessions, URLMap, thread safety
     and tempfile handling.
   * Improved tests.
-  * Rack moved to Git.
+  * Lack moved to Git.
 
 * January 6th, 2009: Fifth public release 0.9.
-  * Rack is now managed by the Rack Core Team.
-  * Rack::Lint is stricter and follows the HTTP RFCs more closely.
+  * Lack is now managed by the Lack Core Team.
+  * Lack::Lint is stricter and follows the HTTP RFCs more closely.
   * Added ConditionalGet middleware.
   * Added ContentLength middleware.
   * Added Deflater middleware.
   * Added Head middleware.
   * Added MethodOverride middleware.
-  * Rack::Mime now provides popular MIME-types and their extension.
+  * Lack::Mime now provides popular MIME-types and their extension.
   * Mongrel Header now streams.
   * Added Thin handler.
   * Official support for swiftiplied Mongrel.
@@ -169,27 +169,27 @@ History
   * Many bugfixes and small improvements.
 
 * January 9th, 2009: Sixth public release 0.9.1.
-  * Fix directory traversal exploits in Rack::File and Rack::Directory.
+  * Fix directory traversal exploits in Lack::File and Lack::Directory.
 
 * April 25th, 2009: Seventh public release 1.0.0.
-  * SPEC change: Rack::VERSION has been pushed to [1,0].
+  * SPEC change: Lack::VERSION has been pushed to [1,0].
   * SPEC change: header values must be Strings now, split on "\n".
   * SPEC change: Content-Length can be missing, in this case chunked transfer
     encoding is used.
   * SPEC change: rack.input must be rewindable and support reading into
-    a buffer, wrap with Rack::RewindableInput if it isn't.
+    a buffer, wrap with Lack::RewindableInput if it isn't.
   * SPEC change: rack.session is now specified.
   * SPEC change: Bodies can now additionally respond to #to_path with
     a filename to be served.
   * NOTE: String bodies break in 1.9, use an Array consisting of a
     single String instead.
-  * New middleware Rack::Lock.
-  * New middleware Rack::ContentType.
-  * Rack::Reloader has been rewritten.
-  * Major update to Rack::Auth::OpenID.
-  * Support for nested parameter parsing in Rack::Response.
-  * Support for redirects in Rack::Response.
-  * HttpOnly cookie support in Rack::Response.
+  * New middleware Lack::Lock.
+  * New middleware Lack::ContentType.
+  * Lack::Reloader has been rewritten.
+  * Major update to Lack::Auth::OpenID.
+  * Support for nested parameter parsing in Lack::Response.
+  * Support for redirects in Lack::Response.
+  * HttpOnly cookie support in Lack::Response.
   * The Rakefile has been rewritten.
   * Many bugfixes and small improvements.
 
@@ -219,7 +219,7 @@ History
   * Added mime type for .ogv and .manifest.
   * Don't squeeze PATH_INFO slashes
   * Use Content-Type to determine POST params parsing
-  * Update Rack::Utils::HTTP_STATUS_CODES hash
+  * Update Lack::Utils::HTTP_STATUS_CODES hash
   * Add status code lookup utility
   * Response should call #to_i on the status
   * Add Request#user_agent
@@ -228,7 +228,7 @@ History
     SERVER_NAME are both missing
   * Allow MockRequest to accept hash params
   * Optimizations to HeaderHash
-  * Refactored rackup into Rack::Server
+  * Refactored rackup into Lack::Server
   * Added Utils.build_nested_query to complement Utils.parse_nested_query
   * Added Utils::Multipart.build_multipart to complement
     Utils::Multipart.parse_multipart
@@ -240,7 +240,7 @@ History
   * Set correct external_encoding for handlers that don't use RewindableInput
 
 * June 13th, 2010: Tenth public release 1.2.0.
-  * Removed Camping adapter: Camping 2.0 supports Rack as-is
+  * Removed Camping adapter: Camping 2.0 supports Lack as-is
   * Removed parsing of quoted values
   * Add Request.trace? and Request.options?
   * Add mime-type for .webm and .htc
@@ -254,7 +254,7 @@ History
     operating systems
 
 * March 13th, 2011: Twelfth public release 1.2.2/1.1.2.
-  * Security fix in Rack::Auth::Digest::MD5: when authenticator
+  * Security fix in Lack::Auth::Digest::MD5: when authenticator
     returned nil, permission was granted on empty password.
 
 * May 22nd, 2011: Thirteenth public release 1.3.0
@@ -262,16 +262,16 @@ History
   * Various multipart fixes
   * Various multipart refactors
   * Infinite loop fix for multipart
-  * Test coverage for Rack::Server returns
+  * Test coverage for Lack::Server returns
   * Allow files with '..', but not path components that are '..'
   * rackup accepts handler-specific options on the command line
   * Request#params no longer merges POST into GET (but returns the same)
   * Use URI.encode_www_form_component instead. Use core methods for escaping.
   * Allow multi-line comments in the config file
   * Bug L#94 reported by Nikolai Lugovoi, query parameter unescaping.
-  * Rack::Response now deletes Content-Length when appropriate
-  * Rack::Deflater now supports streaming
-  * Improved Rack::Handler loading and searching
+  * Lack::Response now deletes Content-Length when appropriate
+  * Lack::Deflater now supports streaming
+  * Improved Lack::Handler loading and searching
   * Support for the PATCH verb
   * env['rack.session.options'] now contains session options
   * Cookies respect renew
@@ -284,22 +284,22 @@ History
 * July 13, 2011: Fifteenth public release 1.3.1
   * Fix 1.9.1 support
   * Fix JRuby support
-  * Properly handle $KCODE in Rack::Utils.escape
-  * Make method_missing/respond_to behavior consistent for Rack::Lock,
-    Rack::Auth::Digest::Request and Rack::Multipart::UploadedFile
+  * Properly handle $KCODE in Lack::Utils.escape
+  * Make method_missing/respond_to behavior consistent for Lack::Lock,
+    Lack::Auth::Digest::Request and Lack::Multipart::UploadedFile
   * Reenable passing rack.session to session middleware
-  * Rack::CommonLogger handles streaming responses correctly
-  * Rack::MockResponse calls close on the body object
+  * Lack::CommonLogger handles streaming responses correctly
+  * Lack::MockResponse calls close on the body object
   * Fix a DOS vector from MRI stdlib backport
 
 * July 16, 2011: Sixteenth public release 1.3.2
-  * Fix for Rails and rack-test, Rack::Utils#escape calls to_s
+  * Fix for Rails and rack-test, Lack::Utils#escape calls to_s
 
 * September 16, 2011: Seventeenth public release 1.3.3
-  * Fix bug with broken query parameters in Rack::ShowExceptions
-  * Rack::Request#cookies no longer swallows exceptions on broken input
+  * Fix bug with broken query parameters in Lack::ShowExceptions
+  * Lack::Request#cookies no longer swallows exceptions on broken input
   * Prevents XSS attacks enabled by bug in Ruby 1.8's regexp engine
-  * Rack::ConditionalGet handles broken If-Modified-Since helpers
+  * Lack::ConditionalGet handles broken If-Modified-Since helpers
 
 * September 16, 2011: Eighteenth public release 1.2.4
   * Fix a bug with MRI regex engine to prevent XSS by malformed unicode
@@ -321,16 +321,16 @@ History
   * Ruby 1.8.6 support has officially been dropped. Not all tests pass.
   * Raise sane error messages for broken config.ru
   * Allow combining run and map in a config.ru
-  * Rack::ContentType will not set Content-Type for responses without a body
+  * Lack::ContentType will not set Content-Type for responses without a body
   * Status code 205 does not send a response body
-  * Rack::Response::Helpers will not rely on instance variables
-  * Rack::Utils.build_query no longer outputs '=' for nil query values
+  * Lack::Response::Helpers will not rely on instance variables
+  * Lack::Utils.build_query no longer outputs '=' for nil query values
   * Various mime types added
-  * Rack::MockRequest now supports HEAD
-  * Rack::Directory now supports files that contain RFC3986 reserved chars
-  * Rack::File now only supports GET and HEAD requests
-  * Rack::Server#start now passes the block to Rack::Handler::<h>#run
-  * Rack::Static now supports an index option
+  * Lack::MockRequest now supports HEAD
+  * Lack::Directory now supports files that contain RFC3986 reserved chars
+  * Lack::File now only supports GET and HEAD requests
+  * Lack::Server#start now passes the block to Lack::Handler::<h>#run
+  * Lack::Static now supports an index option
   * Added the Teapot status code
   * rackup now defaults to Thin instead of Mongrel (if installed)
   * Support added for HTTP_X_FORWARDED_SCHEME
@@ -339,18 +339,18 @@ History
 * January 22nd, 2012: Twenty fifth public release 1.4.1
   * Alter the keyspace limit calculations to reduce issues with nested params
   * Add a workaround for multipart parsing where files contain unescaped "%"
-  * Added Rack::Response::Helpers#method_not_allowed? (code 405)
-  * Rack::File now returns 404 for illegal directory traversals
-  * Rack::File now returns 405 for illegal methods (non HEAD/GET)
-  * Rack::Cascade now catches 405 by default, as well as 404
+  * Added Lack::Response::Helpers#method_not_allowed? (code 405)
+  * Lack::File now returns 404 for illegal directory traversals
+  * Lack::File now returns 405 for illegal methods (non HEAD/GET)
+  * Lack::Cascade now catches 405 by default, as well as 404
   * Cookies missing '--' no longer cause an exception to be raised
   * Various style changes and documentation spelling errors
-  * Rack::BodyProxy always ensures to execute its block
+  * Lack::BodyProxy always ensures to execute its block
   * Additional test coverage around cookies and secrets
-  * Rack::Session::Cookie can now be supplied either secret or old_secret
+  * Lack::Session::Cookie can now be supplied either secret or old_secret
   * Tests are no longer dependent on set order
-  * Rack::Static no longer defaults to serving index files
-  * Rack.release was fixed
+  * Lack::Static no longer defaults to serving index files
+  * Lack.release was fixed
 
 * January 6th, 2013: Twenty sixth public release 1.1.4
   * Add warnings when users do not provide a session secret
@@ -393,17 +393,17 @@ History
   * Additional notes regarding ECMA escape compatibility issues
   * Fix the parsing of multiple ranges in range headers
   * Prevent errors from empty parameter keys
-  * Added PATCH verb to Rack::Request
+  * Added PATCH verb to Lack::Request
   * Various documentation updates
   * Fix session merge semantics (fixes rack-test)
-  * Rack::Static :index can now handle multiple directories
-  * All tests now utilize Rack::Lint (special thanks to Lars Gierth)
-  * Rack::File cache_control parameter is now deprecated, and removed by 1.5
-  * Correct Rack::Directory script name escaping
-  * Rack::Static supports header rules for sophisticated configurations
+  * Lack::Static :index can now handle multiple directories
+  * All tests now utilize Lack::Lint (special thanks to Lars Gierth)
+  * Lack::File cache_control parameter is now deprecated, and removed by 1.5
+  * Correct Lack::Directory script name escaping
+  * Lack::Static supports header rules for sophisticated configurations
   * Multipart parsing now works without a Content-Length header
   * New logos courtesy of Zachary Scott!
-  * Rack::BodyProxy now explicitly defines #each, useful for C extensions
+  * Lack::BodyProxy now explicitly defines #each, useful for C extensions
   * Cookies that are not URI escaped no longer cause exceptions
 
 * January 7th, 2013: Thirtieth public release 1.3.8
@@ -413,51 +413,51 @@ History
   * Security: Prevent unbounded reads in large multipart boundaries
 
 * January 13th, 2013: Thirty second public release 1.4.4, 1.3.9, 1.2.7, 1.1.5
-  * [SEC] Rack::Auth::AbstractRequest no longer symbolizes arbitrary strings
+  * [SEC] Lack::Auth::AbstractRequest no longer symbolizes arbitrary strings
   * Fixed erroneous test case in the 1.3.x series
 
 * January 21st, 2013: Thirty third public release 1.5.0
   * Introduced hijack SPEC, for before-response and after-response hijacking
   * SessionHash is no longer a Hash subclass
-  * Rack::File cache_control parameter is removed, in place of headers options
-  * Rack::Auth::AbstractRequest#scheme now yields strings, not symbols
-  * Rack::Utils cookie functions now format expires in RFC 2822 format
-  * Rack::File now has a default mime type
-  * rackup -b 'run Rack::File.new(".")', option provides command line configs
-  * Rack::Deflater will no longer double encode bodies
-  * Rack::Mime#match? provides convenience for Accept header matching
-  * Rack::Utils#q_values provides splitting for Accept headers
-  * Rack::Utils#best_q_match provides a helper for Accept headers
-  * Rack::Handler.pick provides convenience for finding available servers
+  * Lack::File cache_control parameter is removed, in place of headers options
+  * Lack::Auth::AbstractRequest#scheme now yields strings, not symbols
+  * Lack::Utils cookie functions now format expires in RFC 2822 format
+  * Lack::File now has a default mime type
+  * rackup -b 'run Lack::File.new(".")', option provides command line configs
+  * Lack::Deflater will no longer double encode bodies
+  * Lack::Mime#match? provides convenience for Accept header matching
+  * Lack::Utils#q_values provides splitting for Accept headers
+  * Lack::Utils#best_q_match provides a helper for Accept headers
+  * Lack::Handler.pick provides convenience for finding available servers
   * Puma added to the list of default servers (preferred over Webrick)
   * Various middleware now correctly close body when replacing it
-  * Rack::Request#params is no longer persistent with only GET params
-  * Rack::Request#update_param and #delete_param provide persistent operations
-  * Rack::Request#trusted_proxy? now returns true for local unix sockets
-  * Rack::Response no longer forces Content-Types
-  * Rack::Sendfile provides local mapping configuration options
-  * Rack::Utils#rfc2109 provides old netscape style time output
+  * Lack::Request#params is no longer persistent with only GET params
+  * Lack::Request#update_param and #delete_param provide persistent operations
+  * Lack::Request#trusted_proxy? now returns true for local unix sockets
+  * Lack::Response no longer forces Content-Types
+  * Lack::Sendfile provides local mapping configuration options
+  * Lack::Utils#rfc2109 provides old netscape style time output
   * Updated HTTP status codes
   * Ruby 1.8.6 likely no longer passes tests, and is no longer fully supported
 
 * January 28th, 2013: Thirty fourth public release 1.5.1
-  * Rack::Lint check_hijack now conforms to other parts of SPEC
+  * Lack::Lint check_hijack now conforms to other parts of SPEC
   * Added hash-like methods to Abstract::ID::SessionHash for compatibility
   * Various documentation corrections
 
 * February 7th, Thirty fifth public release 1.1.6, 1.2.8, 1.3.10
-  * Fix CVE-2013-0263, timing attack against Rack::Session::Cookie
+  * Fix CVE-2013-0263, timing attack against Lack::Session::Cookie
 
 * February 7th, Thirty fifth public release 1.4.5
-  * Fix CVE-2013-0263, timing attack against Rack::Session::Cookie
-  * Fix CVE-2013-0262, symlink path traversal in Rack::File
+  * Fix CVE-2013-0263, timing attack against Lack::Session::Cookie
+  * Fix CVE-2013-0262, symlink path traversal in Lack::File
 
 * February 7th, Thirty fifth public release 1.5.2
-  * Fix CVE-2013-0263, timing attack against Rack::Session::Cookie
-  * Fix CVE-2013-0262, symlink path traversal in Rack::File
+  * Fix CVE-2013-0263, timing attack against Lack::Session::Cookie
+  * Fix CVE-2013-0262, symlink path traversal in Lack::File
   * Add various methods to Session for enhanced Rails compatibility
   * Request#trusted_proxy? now only matches whole stirngs
-  * Add JSON cookie coder, to be default in Rack 1.6+ due to security concerns
+  * Add JSON cookie coder, to be default in Lack 1.6+ due to security concerns
   * URLMap host matching in environments that don't set the Host header fixed
   * Fix a race condition that could result in overwritten pidfiles
   * Various documentation additions
@@ -486,7 +486,7 @@ You are also welcome to join the #rack channel on irc.freenode.net.
 
 == Thanks
 
-The Rack Core Team, consisting of
+The Lack Core Team, consisting of
 
 * Christian Neukirchen (chneukirchen)
 * James Tucker (raggi)
@@ -497,7 +497,7 @@ The Rack Core Team, consisting of
 * Santiago Pastorino (spastorino)
 * Konstantin Haase (rkh)
 
-and the Rack Alumnis
+and the Lack Alumnis
 
 * Ryan Tomayko (rtomayko)
 * Scytrin dai Kinthra (scytrin)
@@ -505,7 +505,7 @@ and the Rack Alumnis
 would like to thank:
 
 * Adrian Madrid, for the LiteSpeed handler.
-* Christoffer Sawicki, for the first Rails adapter and Rack::Deflater.
+* Christoffer Sawicki, for the first Rails adapter and Lack::Deflater.
 * Tim Fletcher, for the HTTP authentication code.
 * Luc Heinrich for the Cookie sessions, the static file handler and bugfixes.
 * Armin Ronacher, for the logo and racktools.
@@ -520,16 +520,16 @@ would like to thank:
 * Eric Wong, Hongli Lai, Jeremy Kemper for their continuous support
   and API improvements.
 * Yehuda Katz and Carl Lerche for refactoring rackup.
-* Brian Candler, for Rack::ContentType.
+* Brian Candler, for Lack::ContentType.
 * Graham Batty, for improved handler loading.
 * Stephen Bannasch, for bug reports and documentation.
-* Gary Wright, for proposing a better Rack::Response interface.
-* Jonathan Buch, for improvements regarding Rack::Response.
+* Gary Wright, for proposing a better Lack::Response interface.
+* Jonathan Buch, for improvements regarding Lack::Response.
 * Armin Röhrl, for tracking down bugs in the Cookie generator.
 * Alexander Kellett for testing the Gem and reviewing the announcement.
 * Marcus Rückert, for help with configuring and debugging lighttpd.
 * The WSGI team for the well-done and documented work they've done and
-  Rack builds up on.
+  Lack builds up on.
 * All bug reporters and patch contributors not mentioned above.
 
 
@@ -559,10 +559,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 Links
 =====
 
-Rack:: <http://rack.github.io/>
-Official Rack repositories:: <http://github.com/rack>
-Rack Bug Tracking:: <http://github.com/rack/rack/issues>
+Lack:: <http://rack.github.io/>
+Official Lack repositories:: <http://github.com/rack>
+Lack Bug Tracking:: <http://github.com/rack/rack/issues>
 rack-devel mailing list:: <http://groups.google.com/group/rack-devel>
-Rack's Rubyforge project:: <http://rubyforge.org/projects/rack>
+Lack's Rubyforge project:: <http://rubyforge.org/projects/rack>
 
 Christian Neukirchen:: <http://chneukirchen.org/>

@@ -3,8 +3,8 @@ require 'rack/lint'
 require 'rack/mock'
 require 'stringio'
 
-app = Rack::Lint.new(lambda { |env|
-  req = Rack::Request.new(env)
+app = Lack::Lint.new(lambda { |env|
+  req = Lack::Request.new(env)
 
   env["mock.postdata"] = env["rack.input"].read
   if req.GET["error"]
@@ -13,25 +13,25 @@ app = Rack::Lint.new(lambda { |env|
   end
 
   body = req.head? ? "" : env.to_yaml
-  Rack::Response.new(body,
+  Lack::Response.new(body,
                      req.GET["status"] || 200,
                      "Content-Type" => "text/yaml").finish
 })
 
-describe Rack::MockRequest do
+describe Lack::MockRequest do
   should "return a MockResponse" do
-    res = Rack::MockRequest.new(app).get("")
-    res.should.be.kind_of Rack::MockResponse
+    res = Lack::MockRequest.new(app).get("")
+    res.should.be.kind_of Lack::MockResponse
   end
 
   should "be able to only return the environment" do
-    env = Rack::MockRequest.env_for("")
+    env = Lack::MockRequest.env_for("")
     env.should.be.kind_of Hash
     env.should.include "rack.version"
   end
 
   should "return an environment with a path" do
-    env = Rack::MockRequest.env_for("http://www.example.com/parse?location[]=1&location[]=2&age_group[]=2")
+    env = Lack::MockRequest.env_for("http://www.example.com/parse?location[]=1&location[]=2&age_group[]=2")
     env["QUERY_STRING"].should.equal "location[]=1&location[]=2&age_group[]=2"
     env["PATH_INFO"].should.equal "/parse"
     env.should.be.kind_of Hash
@@ -39,7 +39,7 @@ describe Rack::MockRequest do
   end
 
   should "provide sensible defaults" do
-    res = Rack::MockRequest.new(app).request
+    res = Lack::MockRequest.new(app).request
 
     env = YAML.load(res.body)
     env["REQUEST_METHOD"].should.equal "GET"
@@ -53,52 +53,52 @@ describe Rack::MockRequest do
   end
 
   should "allow GET/POST/PUT/DELETE/HEAD" do
-    res = Rack::MockRequest.new(app).get("", :input => "foo")
+    res = Lack::MockRequest.new(app).get("", :input => "foo")
     env = YAML.load(res.body)
     env["REQUEST_METHOD"].should.equal "GET"
 
-    res = Rack::MockRequest.new(app).post("", :input => "foo")
+    res = Lack::MockRequest.new(app).post("", :input => "foo")
     env = YAML.load(res.body)
     env["REQUEST_METHOD"].should.equal "POST"
 
-    res = Rack::MockRequest.new(app).put("", :input => "foo")
+    res = Lack::MockRequest.new(app).put("", :input => "foo")
     env = YAML.load(res.body)
     env["REQUEST_METHOD"].should.equal "PUT"
 
-    res = Rack::MockRequest.new(app).patch("", :input => "foo")
+    res = Lack::MockRequest.new(app).patch("", :input => "foo")
     env = YAML.load(res.body)
     env["REQUEST_METHOD"].should.equal "PATCH"
 
-    res = Rack::MockRequest.new(app).delete("", :input => "foo")
+    res = Lack::MockRequest.new(app).delete("", :input => "foo")
     env = YAML.load(res.body)
     env["REQUEST_METHOD"].should.equal "DELETE"
     
-    Rack::MockRequest.env_for("/", :method => "HEAD")["REQUEST_METHOD"].
+    Lack::MockRequest.env_for("/", :method => "HEAD")["REQUEST_METHOD"].
       should.equal "HEAD"
 
-    Rack::MockRequest.env_for("/", :method => "OPTIONS")["REQUEST_METHOD"].
+    Lack::MockRequest.env_for("/", :method => "OPTIONS")["REQUEST_METHOD"].
       should.equal "OPTIONS"
   end
 
   should "set content length" do
-    env = Rack::MockRequest.env_for("/", :input => "foo")
+    env = Lack::MockRequest.env_for("/", :input => "foo")
     env["CONTENT_LENGTH"].should.equal "3"
   end
 
   should "allow posting" do
-    res = Rack::MockRequest.new(app).get("", :input => "foo")
+    res = Lack::MockRequest.new(app).get("", :input => "foo")
     env = YAML.load(res.body)
     env["mock.postdata"].should.equal "foo"
 
-    res = Rack::MockRequest.new(app).post("", :input => StringIO.new("foo"))
+    res = Lack::MockRequest.new(app).post("", :input => StringIO.new("foo"))
     env = YAML.load(res.body)
     env["mock.postdata"].should.equal "foo"
   end
 
   should "use all parts of an URL" do
-    res = Rack::MockRequest.new(app).
+    res = Lack::MockRequest.new(app).
       get("https://bla.example.org:9292/meh/foo?bar")
-    res.should.be.kind_of Rack::MockResponse
+    res.should.be.kind_of Lack::MockResponse
 
     env = YAML.load(res.body)
     env["REQUEST_METHOD"].should.equal "GET"
@@ -110,9 +110,9 @@ describe Rack::MockRequest do
   end
 
   should "set SSL port and HTTP flag on when using https" do
-    res = Rack::MockRequest.new(app).
+    res = Lack::MockRequest.new(app).
       get("https://example.org/foo")
-    res.should.be.kind_of Rack::MockResponse
+    res.should.be.kind_of Lack::MockResponse
 
     env = YAML.load(res.body)
     env["REQUEST_METHOD"].should.equal "GET"
@@ -125,9 +125,9 @@ describe Rack::MockRequest do
   end
 
   should "prepend slash to uri path" do
-    res = Rack::MockRequest.new(app).
+    res = Lack::MockRequest.new(app).
       get("foo")
-    res.should.be.kind_of Rack::MockResponse
+    res.should.be.kind_of Lack::MockResponse
 
     env = YAML.load(res.body)
     env["REQUEST_METHOD"].should.equal "GET"
@@ -139,13 +139,13 @@ describe Rack::MockRequest do
   end
 
   should "properly convert method name to an uppercase string" do
-    res = Rack::MockRequest.new(app).request(:get)
+    res = Lack::MockRequest.new(app).request(:get)
     env = YAML.load(res.body)
     env["REQUEST_METHOD"].should.equal "GET"
   end
 
   should "accept params and build query string for GET requests" do
-    res = Rack::MockRequest.new(app).get("/foo?baz=2", :params => {:foo => {:bar => "1"}})
+    res = Lack::MockRequest.new(app).get("/foo?baz=2", :params => {:foo => {:bar => "1"}})
     env = YAML.load(res.body)
     env["REQUEST_METHOD"].should.equal "GET"
     env["QUERY_STRING"].should.include "baz=2"
@@ -155,7 +155,7 @@ describe Rack::MockRequest do
   end
 
   should "accept raw input in params for GET requests" do
-    res = Rack::MockRequest.new(app).get("/foo?baz=2", :params => "foo[bar]=1")
+    res = Lack::MockRequest.new(app).get("/foo?baz=2", :params => "foo[bar]=1")
     env = YAML.load(res.body)
     env["REQUEST_METHOD"].should.equal "GET"
     env["QUERY_STRING"].should.include "baz=2"
@@ -165,7 +165,7 @@ describe Rack::MockRequest do
   end
 
   should "accept params and build url encoded params for POST requests" do
-    res = Rack::MockRequest.new(app).post("/foo", :params => {:foo => {:bar => "1"}})
+    res = Lack::MockRequest.new(app).post("/foo", :params => {:foo => {:bar => "1"}})
     env = YAML.load(res.body)
     env["REQUEST_METHOD"].should.equal "POST"
     env["QUERY_STRING"].should.equal ""
@@ -175,7 +175,7 @@ describe Rack::MockRequest do
   end
 
   should "accept raw input in params for POST requests" do
-    res = Rack::MockRequest.new(app).post("/foo", :params => "foo[bar]=1")
+    res = Lack::MockRequest.new(app).post("/foo", :params => "foo[bar]=1")
     env = YAML.load(res.body)
     env["REQUEST_METHOD"].should.equal "POST"
     env["QUERY_STRING"].should.equal ""
@@ -185,8 +185,8 @@ describe Rack::MockRequest do
   end
 
   should "accept params and build multipart encoded params for POST requests" do
-    files = Rack::Multipart::UploadedFile.new(File.join(File.dirname(__FILE__), "multipart", "file1.txt"))
-    res = Rack::MockRequest.new(app).post("/foo", :params => { "submit-name" => "Larry", "files" => files })
+    files = Lack::Multipart::UploadedFile.new(File.join(File.dirname(__FILE__), "multipart", "file1.txt"))
+    res = Lack::MockRequest.new(app).post("/foo", :params => { "submit-name" => "Larry", "files" => files })
     env = YAML.load(res.body)
     env["REQUEST_METHOD"].should.equal "POST"
     env["QUERY_STRING"].should.equal ""
@@ -196,47 +196,47 @@ describe Rack::MockRequest do
     env["mock.postdata"].gsub("\r", "").length.should.equal 206
   end
 
-  should "behave valid according to the Rack spec" do
+  should "behave valid according to the Lack spec" do
     lambda {
-      Rack::MockRequest.new(app).
+      Lack::MockRequest.new(app).
         get("https://bla.example.org:9292/meh/foo?bar", :lint => true)
-    }.should.not.raise(Rack::Lint::LintError)
+    }.should.not.raise(Lack::Lint::LintError)
   end
 
   should "call close on the original body object" do
     called = false
-    body   = Rack::BodyProxy.new(['hi']) { called = true }
+    body   = Lack::BodyProxy.new(['hi']) { called = true }
     capp   = proc { |e| [200, {'Content-Type' => 'text/plain'}, body] }
     called.should.equal false
-    Rack::MockRequest.new(capp).get('/', :lint => true)
+    Lack::MockRequest.new(capp).get('/', :lint => true)
     called.should.equal true
   end
 end
 
-describe Rack::MockResponse do
+describe Lack::MockResponse do
   should "provide access to the HTTP status" do
-    res = Rack::MockRequest.new(app).get("")
+    res = Lack::MockRequest.new(app).get("")
     res.should.be.successful
     res.should.be.ok
 
-    res = Rack::MockRequest.new(app).get("/?status=404")
+    res = Lack::MockRequest.new(app).get("/?status=404")
     res.should.not.be.successful
     res.should.be.client_error
     res.should.be.not_found
 
-    res = Rack::MockRequest.new(app).get("/?status=501")
+    res = Lack::MockRequest.new(app).get("/?status=501")
     res.should.not.be.successful
     res.should.be.server_error
 
-    res = Rack::MockRequest.new(app).get("/?status=307")
+    res = Lack::MockRequest.new(app).get("/?status=307")
     res.should.be.redirect
 
-    res = Rack::MockRequest.new(app).get("/?status=201", :lint => true)
+    res = Lack::MockRequest.new(app).get("/?status=201", :lint => true)
     res.should.be.empty
   end
 
   should "provide access to the HTTP headers" do
-    res = Rack::MockRequest.new(app).get("")
+    res = Lack::MockRequest.new(app).get("")
     res.should.include "Content-Type"
     res.headers["Content-Type"].should.equal "text/yaml"
     res.original_headers["Content-Type"].should.equal "text/yaml"
@@ -247,15 +247,15 @@ describe Rack::MockResponse do
   end
 
   should "provide access to the HTTP body" do
-    res = Rack::MockRequest.new(app).get("")
+    res = Lack::MockRequest.new(app).get("")
     res.body.should =~ /rack/
     res.should =~ /rack/
     res.should.match(/rack/)
     res.should.satisfy { |r| r.match(/rack/) }
   end
 
-  should "provide access to the Rack errors" do
-    res = Rack::MockRequest.new(app).get("/?error=foo", :lint => true)
+  should "provide access to the Lack errors" do
+    res = Lack::MockRequest.new(app).get("/?error=foo", :lint => true)
     res.should.be.ok
     res.errors.should.not.be.empty
     res.errors.should.include "foo"
@@ -264,14 +264,14 @@ describe Rack::MockResponse do
   should "allow calling body.close afterwards" do
     # this is exactly what rack-test does
     body = StringIO.new("hi")
-    res = Rack::MockResponse.new(200, {}, body)
+    res = Lack::MockResponse.new(200, {}, body)
     body.close if body.respond_to?(:close)
     res.body.should == 'hi'
   end
 
-  should "optionally make Rack errors fatal" do
+  should "optionally make Lack errors fatal" do
     lambda {
-      Rack::MockRequest.new(app).get("/?error=foo", :fatal => true)
-    }.should.raise(Rack::MockRequest::FatalWarning)
+      Lack::MockRequest.new(app).get("/?error=foo", :fatal => true)
+    }.should.raise(Lack::MockRequest::FatalWarning)
   end
 end

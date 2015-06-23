@@ -1,5 +1,5 @@
-module Rack
-  # *Handlers* connect web servers with Rack.
+module Lack
+  # *Handlers* connect web servers with Lack.
   #
   # Handlers usually are activated by calling <tt>MyHandler.run(myapp)</tt>.
   # A second optional hash can be passed to include server-specific
@@ -58,6 +58,6 @@ module Rack
       @handlers ||= {}
       @handlers[server.to_s] = klass.to_s
     end
-    register "webrick", "Rack::Handler::WEBrick"
+    register "webrick", "Lack::Handler::WEBrick"
   end
 end

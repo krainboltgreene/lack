@@ -5,8 +5,8 @@ require 'rack/lint'
 require 'rack/utils'
 require 'rack/response'
 
-module Rack
-  # Rack::MockRequest helps testing your Rack application without
+module Lack
+  # Lack::MockRequest helps testing your Lack application without
   # actually using HTTP.
   #
   # After performing a request on a URL with get/post/put/patch/delete, it
@@ -17,7 +17,7 @@ module Rack
   # get/post/put/patch/delete.
   # <tt>:input</tt>:: A String or IO-like to be used as rack.input.
   # <tt>:fatal</tt>:: Raise a FatalWarning if the app writes to rack.errors.
-  # <tt>:lint</tt>:: If true, wrap the application in a Rack::Lint.
+  # <tt>:lint</tt>:: If true, wrap the application in a Lack::Lint.
 
   class MockRequest
     class FatalWarning < RuntimeError
@@ -41,7 +41,7 @@ module Rack
     end
 
     DEFAULT_ENV = {
-      "rack.version" => Rack::VERSION,
+      "rack.version" => Lack::VERSION,
       "rack.input" => StringIO.new,
       "rack.errors" => StringIO.new,
       "rack.multithread" => true,
@@ -65,7 +65,7 @@ module Rack
       env = self.class.env_for(uri, opts.merge(:method => method))
 
       if opts[:lint]
-        app = Rack::Lint.new(@app)
+        app = Lack::Lint.new(@app)
       else
         app = @app
       end
@@ -84,7 +84,7 @@ module Rack
       @parser.parse(uri)
     end
 
-    # Return the Rack environment used for a request to +uri+.
+    # Return the Lack environment used for a request to +uri+.
     def self.env_for(uri="", opts={})
       uri = parse_uri_rfc2396(uri)
       uri.path = "/#{uri.path}" unless uri.path[0] == ?/
@@ -150,11 +150,11 @@ module Rack
     end
   end
 
-  # Rack::MockResponse provides useful helpers for testing your apps.
+  # Lack::MockResponse provides useful helpers for testing your apps.
   # Usually, you don't create the MockResponse on your own, but use
   # MockRequest.
 
-  class MockResponse < Rack::Response
+  class MockResponse < Lack::Response
     # Headers
     attr_reader :original_headers
 

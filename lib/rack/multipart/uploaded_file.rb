@@ -1,4 +1,4 @@
-module Rack
+module Lack
   module Multipart
     class UploadedFile
       # The filename, *not* including the path, of the "uploaded" file

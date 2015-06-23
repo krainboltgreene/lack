@@ -1,4 +1,4 @@
-module Rack
+module Lack
   class BodyProxy
     def initialize(body, &block)
       @body, @block, @closed = body, block, false

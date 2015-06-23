@@ -3,7 +3,7 @@ require 'rack/rewindable_input'
 
 shared "a rewindable IO object" do
   before do
-    @rio = Rack::RewindableInput.new(@io)
+    @rio = Lack::RewindableInput.new(@io)
   end
 
   should "be able to handle to read()" do
@@ -85,7 +85,7 @@ shared "a rewindable IO object" do
   @rio = nil
 end
 
-describe Rack::RewindableInput do
+describe Lack::RewindableInput do
   describe "given an IO object that is already rewindable" do
     before do
       @io = StringIO.new("hello world")

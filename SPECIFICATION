@@ -1,4 +1,4 @@
-This specification aims to formalize the Rack protocol. You can (and should) use Rack::Lint to enforce it.
+This specification aims to formalize the Lack protocol. You can (and should) use Lack::Lint to enforce it.
 When you develop middleware, be sure to add a Lint before and
 after to catch all mistakes.
 
@@ -6,7 +6,7 @@ after to catch all mistakes.
 applications
 ============
 
-A Rack application is a object that responds to a public method named `call()`.
+A Lack application is a object that responds to a public method named `call()`.
 
 It takes the *environment* and returns an Array of exactly three values:
 
@@ -67,10 +67,10 @@ below.
                            <a href="https://tools.ietf.org/html/rfc3875#section-4.1.18">
                            RFC3875 section 4.1.18</a> for
                            specific behavior.
-In addition to this, the Rack environment must include these
-Rack-specific variables:
-<tt>rack.version</tt>:: The Array representing this version of Rack
-                        See Rack::VERSION, that corresponds to
+In addition to this, the Lack environment must include these
+Lack-specific variables:
+<tt>rack.version</tt>:: The Array representing this version of Lack
+                        See Lack::VERSION, that corresponds to
                         the version of this SPEC.
 <tt>rack.url_scheme</tt>:: +http+ or +https+, depending on the
                            request URL.
@@ -119,7 +119,7 @@ be implemented by the server.
 The server or the application can store their own data in the
 environment, too.  The keys must contain at least one dot,
 and should be prefixed uniquely.  The prefix <tt>rack.</tt>
-is reserved for use with the Rack core distribution and other
+is reserved for use with the Lack core distribution and other
 accepted specifications and must not be used otherwise.
 The environment must not contain the keys
 <tt>HTTP_CONTENT_TYPE</tt> or <tt>HTTP_CONTENT_LENGTH</tt>
@@ -197,7 +197,7 @@ rack.hijack_io, as semantics will change from server to server.
 Users are encouraged to utilize this API with a knowledge of their
 server choice, and servers may extend the functionality of
 hijack_io to provide additional features to users. The purpose of
-rack.hijack is for Rack to "get out of the way", as such, Rack only
+rack.hijack is for Lack to "get out of the way", as such, Lack only
 provides the minimum of specification and support.
 
 If rack.hijack? is false, then rack.hijack should not be set.

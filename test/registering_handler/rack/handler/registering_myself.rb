@@ -1,4 +1,4 @@
-module Rack
+module Lack
   module Handler
     class RegisteringMyself
     end

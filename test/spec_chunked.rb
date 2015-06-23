@@ -2,11 +2,11 @@ require 'rack/chunked'
 require 'rack/lint'
 require 'rack/mock'
 
-describe Rack::Chunked do
+describe Lack::Chunked do
   def chunked(app)
     proc do |env|
-      app = Rack::Chunked.new(app)
-      response = Rack::Lint.new(app).call(env)
+      app = Lack::Chunked.new(app)
+      response = Lack::Lint.new(app).call(env)
       # we want to use body like an array, but it only has #each
       response[2] = response[2].to_enum.to_a
       response
@@ -14,13 +14,13 @@ describe Rack::Chunked do
   end
 
   before do
-    @env = Rack::MockRequest.
+    @env = Lack::MockRequest.
       env_for('/', 'HTTP_VERSION' => '1.1', 'REQUEST_METHOD' => 'GET')
   end
 
   should 'chunk responses with no Content-Length' do
     app = lambda { |env| [200, {"Content-Type" => "text/plain"}, ['Hello', ' ', 'World!']] }
-    response = Rack::MockResponse.new(*chunked(app).call(@env))
+    response = Lack::MockResponse.new(*chunked(app).call(@env))
     response.headers.should.not.include 'Content-Length'
     response.headers['Transfer-Encoding'].should.equal 'chunked'
     response.body.should.equal "5\r\nHello\r\n1\r\n \r\n6\r\nWorld!\r\n0\r\n\r\n"
@@ -28,7 +28,7 @@ describe Rack::Chunked do
 
   should 'chunks empty bodies properly' do
     app = lambda { |env| [200, {"Content-Type" => "text/plain"}, []] }
-    response = Rack::MockResponse.new(*chunked(app).call(@env))
+    response = Lack::MockResponse.new(*chunked(app).call(@env))
     response.headers.should.not.include 'Content-Length'
     response.headers['Transfer-Encoding'].should.equal 'chunked'
     response.body.should.equal "0\r\n\r\n"
@@ -37,7 +37,7 @@ describe Rack::Chunked do
   should 'chunks encoded bodies properly' do
     body = ["\uFFFEHello", " ", "World"].map {|t| t.encode("UTF-16LE") }
     app  = lambda { |env| [200, {"Content-Type" => "text/plain"}, body] }
-    response = Rack::MockResponse.new(*chunked(app).call(@env))
+    response = Lack::MockResponse.new(*chunked(app).call(@env))
     response.headers.should.not.include 'Content-Length'
     response.headers['Transfer-Encoding'].should.equal 'chunked'
     response.body.encoding.to_s.should.equal "ASCII-8BIT"

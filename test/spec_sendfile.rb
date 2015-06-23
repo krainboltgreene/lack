@@ -4,13 +4,13 @@ require 'rack/sendfile'
 require 'rack/mock'
 require 'tmpdir'
 
-describe Rack::File do
+describe Lack::File do
   should "respond to #to_path" do
-    Rack::File.new(Dir.pwd).should.respond_to :to_path
+    Lack::File.new(Dir.pwd).should.respond_to :to_path
   end
 end
 
-describe Rack::Sendfile do
+describe Lack::Sendfile do
   def sendfile_body
     FileUtils.touch File.join(Dir.tmpdir,  "rack_sendfile")
     res = ['Hello World']
@@ -23,11 +23,11 @@ describe Rack::Sendfile do
   end
 
   def sendfile_app(body, mappings = [])
-    Rack::Lint.new Rack::Sendfile.new(simple_app(body), nil, mappings)
+    Lack::Lint.new Lack::Sendfile.new(simple_app(body), nil, mappings)
   end
 
   def request(headers={}, body=sendfile_body, mappings=[])
-    yield Rack::MockRequest.new(sendfile_app(body, mappings)).get('/', headers)
+    yield Lack::MockRequest.new(sendfile_app(body, mappings)).get('/', headers)
   end
 
   def open_file(path)

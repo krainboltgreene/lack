@@ -1,4 +1,4 @@
-= Known issues with Rack and ECMA-262
+= Known issues with Lack and ECMA-262
 
 * Many users expect the escape() function defined in ECMA-262 to be compatible
   with URI. Confusion is especially strong because the documentation for the
@@ -7,7 +7,7 @@
   function, and is not fully compatible. Most notably, for characters outside of
   the BMP. Users should use the more correct encodeURI functions.
 
-= Known issues with Rack and Web servers
+= Known issues with Lack and Web servers
 
 * Lighttpd sets wrong SCRIPT_NAME and PATH_INFO if you mount your
   FastCGI app at "/".  This can be fixed by using this middleware:
@@ -32,12 +32,12 @@
 = Known conflicts regarding parameter parsing
 
  * Many users have differing opinions about parameter parsing. The current
-   parameter parsers in Rack are based on a combination of the HTTP and CGI
+   parameter parsers in Lack are based on a combination of the HTTP and CGI
    specs, and are intended to round-trip encoding and decoding. There are some
    choices that may be viewed as deficiencies, specifically:
-    - Rack does not create implicit arrays for multiple instances of a parameter
-    - Rack returns nil when a value is not given
-    - Rack does not support multi-type keys in parameters
+    - Lack does not create implicit arrays for multiple instances of a parameter
+    - Lack returns nil when a value is not given
+    - Lack does not support multi-type keys in parameters
    These issues or choices, will not be fixed before 2.0, if at all. They are
    very major breaking changes. Users are free to write alternative parameter
    parsers, and their own Request and Response wrappers. Moreover, users are

@@ -1,4 +1,4 @@
-module Rack
+module Lack
   module Multipart
     class Generator
       def initialize(params, first = true)
@@ -35,7 +35,7 @@ module Rack
             value.each(&query)
           when Hash
             value.values.each(&query)
-          when Rack::Multipart::UploadedFile
+          when Lack::Multipart::UploadedFile
             multipart = true
           end
         }

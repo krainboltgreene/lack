@@ -18,7 +18,7 @@ class WEBrick::HTTPResponse
   end
 end
 
-module Rack
+module Lack
   module Handler
     class WEBrick < ::WEBrick::HTTPServlet::AbstractServlet
       def self.run(app, options={})
@@ -29,7 +29,7 @@ module Rack
         options[:Port] ||= 8080
         options[:OutputBufferSize] = 5
         @server = ::WEBrick::HTTPServer.new(options)
-        @server.mount "/", Rack::Handler::WEBrick, app
+        @server.mount "/", Lack::Handler::WEBrick, app
         yield @server  if block_given?
         @server.start
       end
@@ -62,7 +62,7 @@ module Rack
         rack_input = StringIO.new(req.body.to_s)
         rack_input.set_encoding(Encoding::BINARY) if rack_input.respond_to?(:set_encoding)
 
-        env.update({"rack.version" => Rack::VERSION,
+        env.update({"rack.version" => Lack::VERSION,
                      "rack.input" => rack_input,
                      "rack.errors" => $stderr,
 

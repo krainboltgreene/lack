@@ -1,4 +1,4 @@
-module Rack
+module Lack
   class Server
     require_relative "server/options"
 
@@ -11,14 +11,14 @@ module Rack
     # This method can be used to very easily launch a CGI application, for
     # example:
     #
-    #  Rack::Server.start(
+    #  Lack::Server.start(
     #    :app => lambda do |e|
     #      [200, {'Content-Type' => 'text/html'}, ['hello world']]
     #    end,
     #    :server => 'cgi'
     #  )
     #
-    # Further options available here are documented on Rack::Server#initialize
+    # Further options available here are documented on Lack::Server#initialize
     def self.start(options = nil)
       new(options).start
     end
@@ -32,23 +32,20 @@ module Rack
     #     a rackup configuration file path to load (.ru)
     # * :environment
     #     this selects the middleware that will be wrapped around
-    #     your application. Default options available are:
-    #       - development: CommonLogger, ShowExceptions, and Lint
-    #       - deployment: CommonLogger
-    #       - none: no extra middleware
+    #     your application.
     #     note: when the server is a cgi server, CommonLogger is not included.
     # * :server
-    #     choose a specific Rack::Handler, e.g. cgi, fcgi, webrick
+    #     choose a specific Lack::Handler, e.g. cgi, fcgi, webrick
     # * :daemonize
     #     if true, the server will daemonize itself (fork, detach, etc)
     # * :pid
     #     path to write a pid file after daemonize
     # * :Host
-    #     the host address to bind to (used by supporting Rack::Handler)
+    #     the host address to bind to (used by supporting Lack::Handler)
     # * :Port
-    #     the port to bind to (used by supporting Rack::Handler)
+    #     the port to bind to (used by supporting Lack::Handler)
     # * :AccessLog
-    #     webrick access log options (or supporting Rack::Handler)
+    #     webrick access log options (or supporting Lack::Handler)
     # * :debug
     #     turn on debug output ($DEBUG = true)
     # * :warn
@@ -84,34 +81,11 @@ module Rack
       @app ||= options[:builder] ? build_app_from_string : build_app_and_options_from_config
     end
 
-    def self.logging_middleware
-      lambda { |server|
-        server.server.name =~ /CGI/ || server.options[:quiet] ? nil : [Rack::CommonLogger, $stderr]
-      }
-    end
-
-    def self.default_middleware_by_environment
-      m = Hash.new {|h,k| h[k] = []}
-      m["deployment"] = [
-        [Rack::ContentLength],
-        [Rack::Chunked],
-        logging_middleware,
-        [Rack::TempfileReaper]
-      ]
-      m["development"] = [
-        [Rack::ContentLength],
-        [Rack::Chunked],
-        logging_middleware,
-        [Rack::ShowExceptions],
-        [Rack::Lint],
-        [Rack::TempfileReaper]
-      ]
-
-      m
-    end
-
     def self.middleware
-      default_middleware_by_environment
+      {
+        "development" => [],
+        "deployment" => []
+      }
     end
 
     def middleware
@@ -161,7 +135,7 @@ module Rack
     end
 
     def server
-      @_server ||= Rack::Handler.get(options[:server]) || Rack::Handler.default(options)
+      @_server ||= Lack::Handler.get(options[:server]) || Lack::Handler.default(options)
     end
 
     private def build_app_and_options_from_config
@@ -169,13 +143,13 @@ module Rack
         abort "configuration #{options[:config]} not found"
       end
 
-      app, options = Rack::Builder.parse_file(self.options[:config], opt_parser)
+      app, options = Lack::Builder.parse_file(self.options[:config], opt_parser)
       self.options.merge! options
       app
     end
 
     private def build_app_from_string
-      Rack::Builder.new_from_string(self.options[:builder])
+      Lack::Builder.new_from_string(self.options[:builder])
     end
 
     private def parse_options(args)

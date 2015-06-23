@@ -1,9 +1,9 @@
 require 'rack/response'
 require 'stringio'
 
-describe Rack::Response do
+describe Lack::Response do
   should "have sensible default values" do
-    response = Rack::Response.new
+    response = Lack::Response.new
     status, header, body = response.finish
     status.should.equal 200
     header.should.equal({})
@@ -11,7 +11,7 @@ describe Rack::Response do
       part.should.equal ""
     }
 
-    response = Rack::Response.new
+    response = Lack::Response.new
     status, header, body = *response
     status.should.equal 200
     header.should.equal({})
@@ -21,7 +21,7 @@ describe Rack::Response do
   end
 
   it "can be written to" do
-    response = Rack::Response.new
+    response = Lack::Response.new
 
     _, _, body = response.finish do
       response.write "foo"
@@ -36,19 +36,19 @@ describe Rack::Response do
   end
 
   it "can set and read headers" do
-    response = Rack::Response.new
+    response = Lack::Response.new
     response["Content-Type"].should.equal nil
     response["Content-Type"] = "text/plain"
     response["Content-Type"].should.equal "text/plain"
   end
 
   it "can override the initial Content-Type with a different case" do
-    response = Rack::Response.new("", 200, "content-type" => "text/plain")
+    response = Lack::Response.new("", 200, "content-type" => "text/plain")
     response["Content-Type"].should.equal "text/plain"
   end
 
   it "can set cookies" do
-    response = Rack::Response.new
+    response = Lack::Response.new
 
     response.set_cookie "foo", "bar"
     response["Set-Cookie"].should.equal "foo=bar"
@@ -59,14 +59,14 @@ describe Rack::Response do
   end
 
   it "can set cookies with the same name for multiple domains" do
-    response = Rack::Response.new
+    response = Lack::Response.new
     response.set_cookie "foo", {:value => "bar", :domain => "sample.example.com"}
     response.set_cookie "foo", {:value => "bar", :domain => ".example.com"}
     response["Set-Cookie"].should.equal ["foo=bar; domain=sample.example.com", "foo=bar; domain=.example.com"].join("\n")
   end
 
   it "formats the Cookie expiration date accordingly to RFC 6265" do
-    response = Rack::Response.new
+    response = Lack::Response.new
 
     response.set_cookie "foo", {:value => "bar", :expires => Time.now+10}
     response["Set-Cookie"].should.match(
@@ -74,31 +74,31 @@ describe Rack::Response do
   end
 
   it "can set secure cookies" do
-    response = Rack::Response.new
+    response = Lack::Response.new
     response.set_cookie "foo", {:value => "bar", :secure => true}
     response["Set-Cookie"].should.equal "foo=bar; secure"
   end
 
   it "can set http only cookies" do
-    response = Rack::Response.new
+    response = Lack::Response.new
     response.set_cookie "foo", {:value => "bar", :httponly => true}
     response["Set-Cookie"].should.equal "foo=bar; HttpOnly"
   end
 
   it "can set http only cookies with :http_only" do
-    response = Rack::Response.new
+    response = Lack::Response.new
     response.set_cookie "foo", {:value => "bar", :http_only => true}
     response["Set-Cookie"].should.equal "foo=bar; HttpOnly"
   end
 
   it "can set prefers :httponly for http only cookie setting when :httponly and :http_only provided" do
-    response = Rack::Response.new
+    response = Lack::Response.new
     response.set_cookie "foo", {:value => "bar", :httponly => false, :http_only => true}
     response["Set-Cookie"].should.equal "foo=bar"
   end
 
   it "can delete cookies" do
-    response = Rack::Response.new
+    response = Lack::Response.new
     response.set_cookie "foo", "bar"
     response.set_cookie "foo2", "bar2"
     response.delete_cookie "foo"
@@ -109,7 +109,7 @@ describe Rack::Response do
   end
 
   it "can delete cookies with the same name from multiple domains" do
-    response = Rack::Response.new
+    response = Lack::Response.new
     response.set_cookie "foo", {:value => "bar", :domain => "sample.example.com"}
     response.set_cookie "foo", {:value => "bar", :domain => ".example.com"}
     response["Set-Cookie"].should.equal ["foo=bar; domain=sample.example.com", "foo=bar; domain=.example.com"].join("\n")
@@ -121,7 +121,7 @@ describe Rack::Response do
   end
 
   it "can delete cookies with the same name with different paths" do
-    response = Rack::Response.new
+    response = Lack::Response.new
     response.set_cookie "foo", {:value => "bar", :path => "/"}
     response.set_cookie "foo", {:value => "bar", :path => "/path"}
     response["Set-Cookie"].should.equal ["foo=bar; path=/",
@@ -133,13 +133,13 @@ describe Rack::Response do
   end
 
   it "can do redirects" do
-    response = Rack::Response.new
+    response = Lack::Response.new
     response.redirect "/foo"
     status, header, body = response.finish
     status.should.equal 302
     header["Location"].should.equal "/foo"
 
-    response = Rack::Response.new
+    response = Lack::Response.new
     response.redirect "/foo", 307
     status, header, body = response.finish
 
@@ -147,12 +147,12 @@ describe Rack::Response do
   end
 
   it "has a useful constructor" do
-    r = Rack::Response.new("foo")
+    r = Lack::Response.new("foo")
     status, header, body = r.finish
     str = ""; body.each { |part| str << part }
     str.should.equal "foo"
 
-    r = Rack::Response.new(["foo", "bar"])
+    r = Lack::Response.new(["foo", "bar"])
     status, header, body = r.finish
     str = ""; body.each { |part| str << part }
     str.should.equal "foobar"
@@ -162,21 +162,21 @@ describe Rack::Response do
       yield "foo"
       yield "bar"
     end
-    r = Rack::Response.new(object_with_each)
+    r = Lack::Response.new(object_with_each)
     r.write "foo"
     status, header, body = r.finish
     str = ""; body.each { |part| str << part }
     str.should.equal "foobarfoo"
 
-    r = Rack::Response.new([], 500)
+    r = Lack::Response.new([], 500)
     r.status.should.equal 500
 
-    r = Rack::Response.new([], "200 OK")
+    r = Lack::Response.new([], "200 OK")
     r.status.should.equal 200
   end
 
   it "has a constructor that can take a block" do
-    r = Rack::Response.new { |res|
+    r = Lack::Response.new { |res|
       res.status = 404
       res.write "foo"
     }
@@ -187,7 +187,7 @@ describe Rack::Response do
   end
 
   it "doesn't return invalid responses" do
-    r = Rack::Response.new(["foo", "bar"], 204)
+    r = Lack::Response.new(["foo", "bar"], 204)
     _, header, body = r.finish
     str = ""; body.each { |part| str << part }
     str.should.be.empty
@@ -195,30 +195,30 @@ describe Rack::Response do
     header['Content-Length'].should.equal nil
 
     lambda {
-      Rack::Response.new(Object.new)
+      Lack::Response.new(Object.new)
     }.should.raise(TypeError).
       message.should =~ /stringable or iterable required/
   end
 
   it "knows if it's empty" do
-    r = Rack::Response.new
+    r = Lack::Response.new
     r.should.be.empty
     r.write "foo"
     r.should.not.be.empty
 
-    r = Rack::Response.new
+    r = Lack::Response.new
     r.should.be.empty
     r.finish
     r.should.be.empty
 
-    r = Rack::Response.new
+    r = Lack::Response.new
     r.should.be.empty
     r.finish { }
     r.should.not.be.empty
   end
 
   should "provide access to the HTTP status" do
-    res = Rack::Response.new
+    res = Lack::Response.new
     res.status = 200
     res.should.be.successful
     res.should.be.ok
@@ -270,7 +270,7 @@ describe Rack::Response do
   end
 
   should "provide access to the HTTP headers" do
-    res = Rack::Response.new
+    res = Lack::Response.new
     res["Content-Type"] = "text/yaml"
 
     res.should.include "Content-Type"
@@ -282,12 +282,12 @@ describe Rack::Response do
   end
 
   it "does not add or change Content-Length when #finish()ing" do
-    res = Rack::Response.new
+    res = Lack::Response.new
     res.status = 200
     res.finish
     res.headers["Content-Length"].should.be.nil
 
-    res = Rack::Response.new
+    res = Lack::Response.new
     res.status = 200
     res.headers["Content-Length"] = "10"
     res.finish
@@ -295,7 +295,7 @@ describe Rack::Response do
   end
 
   it "updates Content-Length when body appended to using #write" do
-    res = Rack::Response.new
+    res = Lack::Response.new
     res.status = 200
     res.headers["Content-Length"].should.be.nil
     res.write "Hi"
@@ -305,14 +305,14 @@ describe Rack::Response do
   end
 
   it "calls close on #body" do
-    res = Rack::Response.new
+    res = Lack::Response.new
     res.body = StringIO.new
     res.close
     res.body.should.be.closed
   end
 
   it "calls close on #body when 204, 205, or 304" do
-    res = Rack::Response.new
+    res = Lack::Response.new
     res.body = StringIO.new
     res.finish
     res.body.should.not.be.closed
@@ -336,7 +336,7 @@ describe Rack::Response do
   end
 
   it "wraps the body from #to_ary to prevent infinite loops" do
-    res = Rack::Response.new
+    res = Lack::Response.new
     res.finish.last.should.not.respond_to?(:to_ary)
     lambda { res.finish.last.to_ary }.should.raise(NoMethodError)
   end

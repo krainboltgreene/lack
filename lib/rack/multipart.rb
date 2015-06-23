@@ -1,7 +1,7 @@
-module Rack
+module Lack
   # A multipart form data parser, adapted from IOWA.
   #
-  # Usually, Rack::Request#POST takes care of calling this.
+  # Usually, Lack::Request#POST takes care of calling this.
   module Multipart
     require_relative "multipart/uploaded_file"
     require_relative "multipart/parser"

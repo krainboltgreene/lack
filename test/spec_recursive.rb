@@ -2,9 +2,9 @@ require 'rack/lint'
 require 'rack/recursive'
 require 'rack/mock'
 
-describe Rack::Recursive do
+describe Lack::Recursive do
   @app1 = lambda { |env|
-    res = Rack::Response.new
+    res = Lack::Response.new
     res["X-Path-Info"] = env["PATH_INFO"]
     res["X-Query-String"] = env["QUERY_STRING"]
     res.finish do |inner_res|
@@ -13,7 +13,7 @@ describe Rack::Recursive do
   }
 
   @app2 = lambda { |env|
-    Rack::Response.new.finish do |res|
+    Lack::Response.new.finish do |res|
       res.write "App2"
       _, _, body = env['rack.recursive.include'].call(env, "/app1")
       body.each { |b|
@@ -23,19 +23,19 @@ describe Rack::Recursive do
   }
 
   @app3 = lambda { |env|
-    raise Rack::ForwardRequest.new("/app1")
+    raise Lack::ForwardRequest.new("/app1")
   }
 
   @app4 = lambda { |env|
-    raise Rack::ForwardRequest.new("http://example.org/app1/quux?meh")
+    raise Lack::ForwardRequest.new("http://example.org/app1/quux?meh")
   }
   
   def recursive(map)
-    Rack::Lint.new Rack::Recursive.new(Rack::URLMap.new(map))
+    Lack::Lint.new Lack::Recursive.new(Lack::URLMap.new(map))
   end
 
   should "allow for subrequests" do
-    res = Rack::MockRequest.new(recursive("/app1" => @app1,
+    res = Lack::MockRequest.new(recursive("/app1" => @app1,
                                           "/app2" => @app2)).
       get("/app2")
 
@@ -44,12 +44,12 @@ describe Rack::Recursive do
   end
 
   should "raise error on requests not below the app" do
-    app = Rack::URLMap.new("/app1" => @app1,
+    app = Lack::URLMap.new("/app1" => @app1,
                            "/app" => recursive("/1" => @app1,
                                                "/2" => @app2))
 
     lambda {
-      Rack::MockRequest.new(app).get("/app/2")
+      Lack::MockRequest.new(app).get("/app/2")
     }.should.raise(ArgumentError).
       message.should =~ /can only include below/
   end
@@ -59,11 +59,11 @@ describe Rack::Recursive do
                     "/app3" => @app3,
                     "/app4" => @app4)
 
-    res = Rack::MockRequest.new(app).get("/app3")
+    res = Lack::MockRequest.new(app).get("/app3")
     res.should.be.ok
     res.body.should.equal "App1"
 
-    res = Rack::MockRequest.new(app).get("/app4")
+    res = Lack::MockRequest.new(app).get("/app4")
     res.should.be.ok
     res.body.should.equal "App1"
     res["X-Path-Info"].should.equal "/quux"

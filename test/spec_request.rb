@@ -3,9 +3,9 @@ require 'cgi'
 require 'rack/request'
 require 'rack/mock'
 
-describe Rack::Request do
+describe Lack::Request do
   should "wrap the rack variables" do
-    req = Rack::Request.new(Rack::MockRequest.env_for("http://example.com:8080/"))
+    req = Lack::Request.new(Lack::MockRequest.env_for("http://example.com:8080/"))
 
     req.body.should.respond_to? :gets
     req.scheme.should.equal "http"
@@ -30,103 +30,103 @@ describe Rack::Request do
   end
 
   should "figure out the correct host" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_HOST" => "www2.example.org")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_HOST" => "www2.example.org")
     req.host.should.equal "www2.example.org"
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "SERVER_NAME" => "example.org", "SERVER_PORT" => "9292")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "SERVER_NAME" => "example.org", "SERVER_PORT" => "9292")
     req.host.should.equal "example.org"
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org:9292")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org:9292")
     req.host.should.equal "example.org"
 
-    env = Rack::MockRequest.env_for("/", "SERVER_ADDR" => "192.168.1.1", "SERVER_PORT" => "9292")
+    env = Lack::MockRequest.env_for("/", "SERVER_ADDR" => "192.168.1.1", "SERVER_PORT" => "9292")
     env.delete("SERVER_NAME")
-    req = Rack::Request.new(env)
+    req = Lack::Request.new(env)
     req.host.should.equal "192.168.1.1"
 
-    env = Rack::MockRequest.env_for("/")
+    env = Lack::MockRequest.env_for("/")
     env.delete("SERVER_NAME")
-    req = Rack::Request.new(env)
+    req = Lack::Request.new(env)
     req.host.should.equal ""
   end
 
   should "figure out the correct port" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_HOST" => "www2.example.org")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_HOST" => "www2.example.org")
     req.port.should.equal 80
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_HOST" => "www2.example.org:81")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_HOST" => "www2.example.org:81")
     req.port.should.equal 81
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "SERVER_NAME" => "example.org", "SERVER_PORT" => "9292")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "SERVER_NAME" => "example.org", "SERVER_PORT" => "9292")
     req.port.should.equal 9292
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org:9292")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org:9292")
     req.port.should.equal 9292
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org")
     req.port.should.equal 80
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org", "HTTP_X_FORWARDED_SSL" => "on")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org", "HTTP_X_FORWARDED_SSL" => "on")
     req.port.should.equal 443
 
-     req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org", "HTTP_X_FORWARDED_PROTO" => "https")
+     req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org", "HTTP_X_FORWARDED_PROTO" => "https")
     req.port.should.equal 443
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org", "HTTP_X_FORWARDED_PORT" => "9393")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org", "HTTP_X_FORWARDED_PORT" => "9393")
     req.port.should.equal 9393
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org:9393", "SERVER_PORT" => "80")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org:9393", "SERVER_PORT" => "80")
     req.port.should.equal 9393
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org", "SERVER_PORT" => "9393")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org", "SERVER_PORT" => "9393")
     req.port.should.equal 80
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost", "HTTP_X_FORWARDED_PROTO" => "https", "SERVER_PORT" => "80")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_HOST" => "localhost", "HTTP_X_FORWARDED_PROTO" => "https", "SERVER_PORT" => "80")
     req.port.should.equal 443
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost", "HTTP_X_FORWARDED_PROTO" => "https,https", "SERVER_PORT" => "80")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_HOST" => "localhost", "HTTP_X_FORWARDED_PROTO" => "https,https", "SERVER_PORT" => "80")
     req.port.should.equal 443
   end
 
   should "figure out the correct host with port" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_HOST" => "www2.example.org")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_HOST" => "www2.example.org")
     req.host_with_port.should.equal "www2.example.org"
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81")
     req.host_with_port.should.equal "localhost:81"
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "SERVER_NAME" => "example.org", "SERVER_PORT" => "9292")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "SERVER_NAME" => "example.org", "SERVER_PORT" => "9292")
     req.host_with_port.should.equal "example.org:9292"
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org:9292")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org:9292")
     req.host_with_port.should.equal "example.org:9292"
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org", "SERVER_PORT" => "9393")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_HOST" => "localhost:81", "HTTP_X_FORWARDED_HOST" => "example.org", "SERVER_PORT" => "9393")
     req.host_with_port.should.equal "example.org"
   end
 
   should "parse the query string" do
-    req = Rack::Request.new(Rack::MockRequest.env_for("/?foo=bar&quux=bla"))
+    req = Lack::Request.new(Lack::MockRequest.env_for("/?foo=bar&quux=bla"))
     req.query_string.should.equal "foo=bar&quux=bla"
     req.GET.should.equal "foo" => "bar", "quux" => "bla"
     req.POST.should.be.empty
@@ -134,7 +134,7 @@ describe Rack::Request do
   end
 
   should "not truncate query strings containing semi-colons #543" do
-    req = Rack::Request.new(Rack::MockRequest.env_for("/?foo=bar&quux=b;la"))
+    req = Lack::Request.new(Lack::MockRequest.env_for("/?foo=bar&quux=b;la"))
     req.query_string.should.equal "foo=bar&quux=b;la"
     req.GET.should.equal "foo" => "bar", "quux" => "b;la"
     req.POST.should.be.empty
@@ -142,36 +142,36 @@ describe Rack::Request do
   end
 
   should "limit the keys from the GET query string" do
-    env = Rack::MockRequest.env_for("/?foo=bar")
+    env = Lack::MockRequest.env_for("/?foo=bar")
 
-    old, Rack::Utils.key_space_limit = Rack::Utils.key_space_limit, 1
+    old, Lack::Utils.key_space_limit = Lack::Utils.key_space_limit, 1
     begin
-      req = Rack::Request.new(env)
+      req = Lack::Request.new(env)
       lambda { req.GET }.should.raise(RangeError)
     ensure
-      Rack::Utils.key_space_limit = old
+      Lack::Utils.key_space_limit = old
     end
   end
 
   should "limit the key size per nested params hash" do
-    nested_query = Rack::MockRequest.env_for("/?foo%5Bbar%5D%5Bbaz%5D%5Bqux%5D=1")
-    plain_query  = Rack::MockRequest.env_for("/?foo_bar__baz__qux_=1")
+    nested_query = Lack::MockRequest.env_for("/?foo%5Bbar%5D%5Bbaz%5D%5Bqux%5D=1")
+    plain_query  = Lack::MockRequest.env_for("/?foo_bar__baz__qux_=1")
 
-    old, Rack::Utils.key_space_limit = Rack::Utils.key_space_limit, 3
+    old, Lack::Utils.key_space_limit = Lack::Utils.key_space_limit, 3
     begin
-      lambda { Rack::Request.new(nested_query).GET }.should.not.raise(RangeError)
-      lambda { Rack::Request.new(plain_query).GET  }.should.raise(RangeError)
+      lambda { Lack::Request.new(nested_query).GET }.should.not.raise(RangeError)
+      lambda { Lack::Request.new(plain_query).GET  }.should.raise(RangeError)
     ensure
-      Rack::Utils.key_space_limit = old
+      Lack::Utils.key_space_limit = old
     end
   end
 
   should "not unify GET and POST when calling params" do
-    mr = Rack::MockRequest.env_for("/?foo=quux",
+    mr = Lack::MockRequest.env_for("/?foo=quux",
       "REQUEST_METHOD" => 'POST',
       :input => "foo=bar&quux=bla"
     )
-    req = Rack::Request.new mr
+    req = Lack::Request.new mr
 
     req.params
 
@@ -181,25 +181,25 @@ describe Rack::Request do
   end
 
   should "raise if input params has invalid %-encoding" do
-    mr = Rack::MockRequest.env_for("/?foo=quux",
+    mr = Lack::MockRequest.env_for("/?foo=quux",
       "REQUEST_METHOD" => 'POST',
       :input => "a%=1"
     )
-    req = Rack::Request.new mr
+    req = Lack::Request.new mr
 
     lambda { req.POST }.
-      should.raise(Rack::Utils::InvalidParameterError).
+      should.raise(Lack::Utils::InvalidParameterError).
       message.should.equal "invalid %-encoding (a%)"
   end
 
   should "raise if rack.input is missing" do
-    req = Rack::Request.new({})
+    req = Lack::Request.new({})
     lambda { req.POST }.should.raise(RuntimeError)
   end
 
   should "parse POST data when method is POST and no Content-Type given" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/?foo=quux",
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/?foo=quux",
         "REQUEST_METHOD" => 'POST',
         :input => "foo=bar&quux=bla")
     req.content_type.should.be.nil
@@ -211,22 +211,22 @@ describe Rack::Request do
   end
 
   should "limit the keys from the POST form data" do
-    env = Rack::MockRequest.env_for("",
+    env = Lack::MockRequest.env_for("",
             "REQUEST_METHOD" => 'POST',
             :input => "foo=bar&quux=bla")
 
-    old, Rack::Utils.key_space_limit = Rack::Utils.key_space_limit, 1
+    old, Lack::Utils.key_space_limit = Lack::Utils.key_space_limit, 1
     begin
-      req = Rack::Request.new(env)
+      req = Lack::Request.new(env)
       lambda { req.POST }.should.raise(RangeError)
     ensure
-      Rack::Utils.key_space_limit = old
+      Lack::Utils.key_space_limit = old
     end
   end
 
   should "parse POST data with explicit content type regardless of method" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/",
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/",
         "CONTENT_TYPE" => 'application/x-www-form-urlencoded;foo=bar',
         :input => "foo=bar&quux=bla")
     req.content_type.should.equal 'application/x-www-form-urlencoded;foo=bar'
@@ -237,8 +237,8 @@ describe Rack::Request do
   end
 
   should "not parse POST data when media type is not form-data" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/?foo=quux",
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/?foo=quux",
         "REQUEST_METHOD" => 'POST',
         "CONTENT_TYPE" => 'text/plain;charset=utf-8',
         :input => "foo=bar&quux=bla")
@@ -251,8 +251,8 @@ describe Rack::Request do
   end
 
   should "parse POST data on PUT when media type is form-data" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/?foo=quux",
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/?foo=quux",
         "REQUEST_METHOD" => 'PUT',
         "CONTENT_TYPE" => 'application/x-www-form-urlencoded',
         :input => "foo=bar&quux=bla")
@@ -262,8 +262,8 @@ describe Rack::Request do
 
   should "rewind input after parsing POST data" do
     input = StringIO.new("foo=bar&quux=bla")
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/",
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/",
         "CONTENT_TYPE" => 'application/x-www-form-urlencoded;foo=bar',
         :input => input)
     req.params.should.equal "foo" => "bar", "quux" => "bla"
@@ -271,22 +271,22 @@ describe Rack::Request do
   end
 
   should "clean up Safari's ajax POST body" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/",
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/",
         'REQUEST_METHOD' => 'POST', :input => "foo=bar&quux=bla\0")
     req.POST.should.equal "foo" => "bar", "quux" => "bla"
   end
 
   should "get value by key from params with #[]" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("?foo=quux")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("?foo=quux")
     req['foo'].should.equal 'quux'
     req[:foo].should.equal 'quux'
   end
 
   should "set value to key on params with #[]=" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("?foo=duh")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("?foo=duh")
     req['foo'].should.equal 'duh'
     req[:foo].should.equal 'duh'
     req.params.should.equal 'foo' => 'duh'
@@ -303,54 +303,54 @@ describe Rack::Request do
   end
 
   should "return values for the keys in the order given from values_at" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("?foo=baz&wun=der&bar=ful")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("?foo=baz&wun=der&bar=ful")
     req.values_at('foo').should.equal ['baz']
     req.values_at('foo', 'wun').should.equal ['baz', 'der']
     req.values_at('bar', 'foo', 'wun').should.equal ['ful', 'baz', 'der']
   end
 
   should "extract referrer correctly" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_REFERER" => "/some/path")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_REFERER" => "/some/path")
     req.referer.should.equal "/some/path"
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/")
     req.referer.should.equal nil
   end
 
   should "extract user agent correctly" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "HTTP_USER_AGENT" => "Mozilla/4.0 (compatible)")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "HTTP_USER_AGENT" => "Mozilla/4.0 (compatible)")
     req.user_agent.should.equal "Mozilla/4.0 (compatible)"
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/")
     req.user_agent.should.equal nil
   end
 
   should "treat missing content type as nil" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/")
     req.content_type.should.equal nil
   end
 
   should "treat empty content type as nil" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "CONTENT_TYPE" => "")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "CONTENT_TYPE" => "")
     req.content_type.should.equal nil
   end
 
   should "return nil media type for empty content type" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/", "CONTENT_TYPE" => "")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/", "CONTENT_TYPE" => "")
     req.media_type.should.equal nil
   end
 
   should "cache, but invalidates the cache" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/?foo=quux",
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/?foo=quux",
         "CONTENT_TYPE" => "application/x-www-form-urlencoded",
         :input => "foo=bar&quux=bla")
     req.GET.should.equal "foo" => "quux"
@@ -367,55 +367,55 @@ describe Rack::Request do
   end
 
   should "figure out if called via XHR" do
-    req = Rack::Request.new(Rack::MockRequest.env_for(""))
+    req = Lack::Request.new(Lack::MockRequest.env_for(""))
     req.should.not.be.xhr
 
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("", "HTTP_X_REQUESTED_WITH" => "XMLHttpRequest")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("", "HTTP_X_REQUESTED_WITH" => "XMLHttpRequest")
     req.should.be.xhr
   end
 
   should "ssl detection" do
-    request = Rack::Request.new(Rack::MockRequest.env_for("/"))
+    request = Lack::Request.new(Lack::MockRequest.env_for("/"))
     request.scheme.should.equal "http"
     request.should.not.be.ssl?
 
-    request = Rack::Request.new(Rack::MockRequest.env_for("/", 'HTTPS' => 'on'))
+    request = Lack::Request.new(Lack::MockRequest.env_for("/", 'HTTPS' => 'on'))
     request.scheme.should.equal "https"
     request.should.be.ssl?
 
-    request = Rack::Request.new(Rack::MockRequest.env_for("/", 'rack.url_scheme' => 'https'))
+    request = Lack::Request.new(Lack::MockRequest.env_for("/", 'rack.url_scheme' => 'https'))
     request.scheme.should.equal "https"
     request.should.be.ssl?
 
-    request = Rack::Request.new(Rack::MockRequest.env_for("/", 'HTTP_HOST' => 'www.example.org:8080'))
+    request = Lack::Request.new(Lack::MockRequest.env_for("/", 'HTTP_HOST' => 'www.example.org:8080'))
     request.scheme.should.equal "http"
     request.should.not.be.ssl?
 
-    request = Rack::Request.new(Rack::MockRequest.env_for("/", 'HTTP_HOST' => 'www.example.org:8443', 'HTTPS' => 'on'))
+    request = Lack::Request.new(Lack::MockRequest.env_for("/", 'HTTP_HOST' => 'www.example.org:8443', 'HTTPS' => 'on'))
     request.scheme.should.equal "https"
     request.should.be.ssl?
 
-    request = Rack::Request.new(Rack::MockRequest.env_for("/", 'HTTP_HOST' => 'www.example.org:8443', 'HTTP_X_FORWARDED_SSL' => 'on'))
+    request = Lack::Request.new(Lack::MockRequest.env_for("/", 'HTTP_HOST' => 'www.example.org:8443', 'HTTP_X_FORWARDED_SSL' => 'on'))
     request.scheme.should.equal "https"
     request.should.be.ssl?
 
-    request = Rack::Request.new(Rack::MockRequest.env_for("/", 'HTTP_X_FORWARDED_SCHEME' => 'https'))
+    request = Lack::Request.new(Lack::MockRequest.env_for("/", 'HTTP_X_FORWARDED_SCHEME' => 'https'))
     request.scheme.should.equal "https"
     request.should.be.ssl?
 
-    request = Rack::Request.new(Rack::MockRequest.env_for("/", 'HTTP_X_FORWARDED_PROTO' => 'https'))
+    request = Lack::Request.new(Lack::MockRequest.env_for("/", 'HTTP_X_FORWARDED_PROTO' => 'https'))
     request.scheme.should.equal "https"
     request.should.be.ssl?
 
-    request = Rack::Request.new(Rack::MockRequest.env_for("/", 'HTTP_X_FORWARDED_PROTO' => 'https, http, http'))
+    request = Lack::Request.new(Lack::MockRequest.env_for("/", 'HTTP_X_FORWARDED_PROTO' => 'https, http, http'))
     request.scheme.should.equal "https"
     request.should.be.ssl?
   end
 
   should "parse cookies" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("", "HTTP_COOKIE" => "foo=bar;quux=h&m")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("", "HTTP_COOKIE" => "foo=bar;quux=h&m")
     req.cookies.should.equal "foo" => "bar", "quux" => "h&m"
     req.cookies.should.equal "foo" => "bar", "quux" => "h&m"
     req.env.delete("HTTP_COOKIE")
@@ -423,8 +423,8 @@ describe Rack::Request do
   end
 
   should "always return the same hash object" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("", "HTTP_COOKIE" => "foo=bar;quux=h&m")
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("", "HTTP_COOKIE" => "foo=bar;quux=h&m")
     hash = req.cookies
     req.env.delete("HTTP_COOKIE")
     req.cookies.should.equal(hash)
@@ -433,55 +433,55 @@ describe Rack::Request do
   end
 
   should "modify the cookies hash in place" do
-    req = Rack::Request.new(Rack::MockRequest.env_for(""))
+    req = Lack::Request.new(Lack::MockRequest.env_for(""))
     req.cookies.should.equal({})
     req.cookies['foo'] = 'bar'
     req.cookies.should.equal 'foo' => 'bar'
   end
 
   should "not modify the params hash in place" do
-    e = Rack::MockRequest.env_for("")
-    req1 = Rack::Request.new(e)
+    e = Lack::MockRequest.env_for("")
+    req1 = Lack::Request.new(e)
     req1.params.should.equal({})
     req1.params['foo'] = 'bar'
     req1.params.should.equal 'foo' => 'bar'
-    req2 = Rack::Request.new(e)
+    req2 = Lack::Request.new(e)
     req2.params.should.equal({})
   end
 
   should "modify params hash if param is in GET" do
-    e = Rack::MockRequest.env_for("?foo=duh")
-    req1 = Rack::Request.new(e)
+    e = Lack::MockRequest.env_for("?foo=duh")
+    req1 = Lack::Request.new(e)
     req1.params.should.equal 'foo' => 'duh'
     req1.update_param 'foo', 'bar'
     req1.params.should.equal 'foo' => 'bar'
-    req2 = Rack::Request.new(e)
+    req2 = Lack::Request.new(e)
     req2.params.should.equal 'foo' => 'bar'
   end
 
   should "modify params hash if param is in POST" do
-    e = Rack::MockRequest.env_for("", "REQUEST_METHOD" => 'POST', :input => 'foo=duh')
-    req1 = Rack::Request.new(e)
+    e = Lack::MockRequest.env_for("", "REQUEST_METHOD" => 'POST', :input => 'foo=duh')
+    req1 = Lack::Request.new(e)
     req1.params.should.equal 'foo' => 'duh'
     req1.update_param 'foo', 'bar'
     req1.params.should.equal 'foo' => 'bar'
-    req2 = Rack::Request.new(e)
+    req2 = Lack::Request.new(e)
     req2.params.should.equal 'foo' => 'bar'
   end
 
   should "modify params hash, even if param didn't exist before" do
-    e = Rack::MockRequest.env_for("")
-    req1 = Rack::Request.new(e)
+    e = Lack::MockRequest.env_for("")
+    req1 = Lack::Request.new(e)
     req1.params.should.equal({})
     req1.update_param 'foo', 'bar'
     req1.params.should.equal 'foo' => 'bar'
-    req2 = Rack::Request.new(e)
+    req2 = Lack::Request.new(e)
     req2.params.should.equal 'foo' => 'bar'
   end
 
   should "modify params hash by changing only GET" do
-    e = Rack::MockRequest.env_for("?foo=duhget")
-    req = Rack::Request.new(e)
+    e = Lack::MockRequest.env_for("?foo=duhget")
+    req = Lack::Request.new(e)
     req.GET.should.equal 'foo' => 'duhget'
     req.POST.should.equal({})
     req.update_param 'foo', 'bar'
@@ -490,8 +490,8 @@ describe Rack::Request do
   end
 
   should "modify params hash by changing only POST" do
-    e = Rack::MockRequest.env_for("", "REQUEST_METHOD" => 'POST', :input => "foo=duhpost")
-    req = Rack::Request.new(e)
+    e = Lack::MockRequest.env_for("", "REQUEST_METHOD" => 'POST', :input => "foo=duhpost")
+    req = Lack::Request.new(e)
     req.GET.should.equal({})
     req.POST.should.equal 'foo' => 'duhpost'
     req.update_param 'foo', 'bar'
@@ -500,8 +500,8 @@ describe Rack::Request do
   end
 
   should "modify params hash, even if param is defined in both POST and GET" do
-    e = Rack::MockRequest.env_for("?foo=duhget", "REQUEST_METHOD" => 'POST', :input => "foo=duhpost")
-    req1 = Rack::Request.new(e)
+    e = Lack::MockRequest.env_for("?foo=duhget", "REQUEST_METHOD" => 'POST', :input => "foo=duhpost")
+    req1 = Lack::Request.new(e)
     req1.GET.should.equal 'foo' => 'duhget'
     req1.POST.should.equal 'foo' => 'duhpost'
     req1.params.should.equal 'foo' => 'duhpost'
@@ -509,7 +509,7 @@ describe Rack::Request do
     req1.GET.should.equal 'foo' => 'bar'
     req1.POST.should.equal 'foo' => 'bar'
     req1.params.should.equal 'foo' => 'bar'
-    req2 = Rack::Request.new(e)
+    req2 = Lack::Request.new(e)
     req2.GET.should.equal 'foo' => 'bar'
     req2.POST.should.equal 'foo' => 'bar'
     req2.params.should.equal 'foo' => 'bar'
@@ -517,38 +517,38 @@ describe Rack::Request do
   end
 
   should "allow deleting from params hash if param is in GET" do
-    e = Rack::MockRequest.env_for("?foo=bar")
-    req1 = Rack::Request.new(e)
+    e = Lack::MockRequest.env_for("?foo=bar")
+    req1 = Lack::Request.new(e)
     req1.params.should.equal 'foo' => 'bar'
     req1.delete_param('foo').should.equal 'bar'
     req1.params.should.equal({})
-    req2 = Rack::Request.new(e)
+    req2 = Lack::Request.new(e)
     req2.params.should.equal({})
   end
 
   should "allow deleting from params hash if param is in POST" do
-    e = Rack::MockRequest.env_for("", "REQUEST_METHOD" => 'POST', :input => 'foo=bar')
-    req1 = Rack::Request.new(e)
+    e = Lack::MockRequest.env_for("", "REQUEST_METHOD" => 'POST', :input => 'foo=bar')
+    req1 = Lack::Request.new(e)
     req1.params.should.equal 'foo' => 'bar'
     req1.delete_param('foo').should.equal 'bar'
     req1.params.should.equal({})
-    req2 = Rack::Request.new(e)
+    req2 = Lack::Request.new(e)
     req2.params.should.equal({})
   end
 
   should "pass through non-uri escaped cookies as-is" do
-    req = Rack::Request.new Rack::MockRequest.env_for("", "HTTP_COOKIE" => "foo=%")
+    req = Lack::Request.new Lack::MockRequest.env_for("", "HTTP_COOKIE" => "foo=%")
     req.cookies["foo"].should == "%"
   end
 
   should "parse cookies according to RFC 2109" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for('', 'HTTP_COOKIE' => 'foo=bar;foo=car')
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for('', 'HTTP_COOKIE' => 'foo=bar;foo=car')
     req.cookies.should.equal 'foo' => 'bar'
   end
 
   should 'parse cookies with quotes' do
-    req = Rack::Request.new Rack::MockRequest.env_for('', {
+    req = Lack::Request.new Lack::MockRequest.env_for('', {
       'HTTP_COOKIE' => '$Version="1"; Customer="WILE_E_COYOTE"; $Path="/acme"; Part_Number="Rocket_Launcher_0001"; $Path="/acme"'
     })
     req.cookies.should.equal({
@@ -560,7 +560,7 @@ describe Rack::Request do
   end
 
   should "provide setters" do
-    req = Rack::Request.new(e=Rack::MockRequest.env_for(""))
+    req = Lack::Request.new(e=Lack::MockRequest.env_for(""))
     req.script_name.should.equal ""
     req.script_name = "/foo"
     req.script_name.should.equal "/foo"
@@ -573,59 +573,59 @@ describe Rack::Request do
   end
 
   should "provide the original env" do
-    req = Rack::Request.new(e = Rack::MockRequest.env_for(""))
+    req = Lack::Request.new(e = Lack::MockRequest.env_for(""))
     req.env.should == e
   end
 
   should "restore the base URL" do
-    Rack::Request.new(Rack::MockRequest.env_for("")).base_url.
+    Lack::Request.new(Lack::MockRequest.env_for("")).base_url.
       should.equal "http://example.org"
-    Rack::Request.new(Rack::MockRequest.env_for("", "SCRIPT_NAME" => "/foo")).base_url.
+    Lack::Request.new(Lack::MockRequest.env_for("", "SCRIPT_NAME" => "/foo")).base_url.
       should.equal "http://example.org"
   end
 
   should "restore the URL" do
-    Rack::Request.new(Rack::MockRequest.env_for("")).url.
+    Lack::Request.new(Lack::MockRequest.env_for("")).url.
       should.equal "http://example.org/"
-    Rack::Request.new(Rack::MockRequest.env_for("", "SCRIPT_NAME" => "/foo")).url.
+    Lack::Request.new(Lack::MockRequest.env_for("", "SCRIPT_NAME" => "/foo")).url.
       should.equal "http://example.org/foo/"
-    Rack::Request.new(Rack::MockRequest.env_for("/foo")).url.
+    Lack::Request.new(Lack::MockRequest.env_for("/foo")).url.
       should.equal "http://example.org/foo"
-    Rack::Request.new(Rack::MockRequest.env_for("?foo")).url.
+    Lack::Request.new(Lack::MockRequest.env_for("?foo")).url.
       should.equal "http://example.org/?foo"
-    Rack::Request.new(Rack::MockRequest.env_for("http://example.org:8080/")).url.
+    Lack::Request.new(Lack::MockRequest.env_for("http://example.org:8080/")).url.
       should.equal "http://example.org:8080/"
-    Rack::Request.new(Rack::MockRequest.env_for("https://example.org/")).url.
+    Lack::Request.new(Lack::MockRequest.env_for("https://example.org/")).url.
       should.equal "https://example.org/"
-    Rack::Request.new(Rack::MockRequest.env_for("coffee://example.org/")).url.
+    Lack::Request.new(Lack::MockRequest.env_for("coffee://example.org/")).url.
       should.equal "coffee://example.org/"
-    Rack::Request.new(Rack::MockRequest.env_for("coffee://example.org:443/")).url.
+    Lack::Request.new(Lack::MockRequest.env_for("coffee://example.org:443/")).url.
       should.equal "coffee://example.org:443/"
-    Rack::Request.new(Rack::MockRequest.env_for("https://example.com:8080/foo?foo")).url.
+    Lack::Request.new(Lack::MockRequest.env_for("https://example.com:8080/foo?foo")).url.
       should.equal "https://example.com:8080/foo?foo"
   end
 
   should "restore the full path" do
-    Rack::Request.new(Rack::MockRequest.env_for("")).fullpath.
+    Lack::Request.new(Lack::MockRequest.env_for("")).fullpath.
       should.equal "/"
-    Rack::Request.new(Rack::MockRequest.env_for("", "SCRIPT_NAME" => "/foo")).fullpath.
+    Lack::Request.new(Lack::MockRequest.env_for("", "SCRIPT_NAME" => "/foo")).fullpath.
       should.equal "/foo/"
-    Rack::Request.new(Rack::MockRequest.env_for("/foo")).fullpath.
+    Lack::Request.new(Lack::MockRequest.env_for("/foo")).fullpath.
       should.equal "/foo"
-    Rack::Request.new(Rack::MockRequest.env_for("?foo")).fullpath.
+    Lack::Request.new(Lack::MockRequest.env_for("?foo")).fullpath.
       should.equal "/?foo"
-    Rack::Request.new(Rack::MockRequest.env_for("http://example.org:8080/")).fullpath.
+    Lack::Request.new(Lack::MockRequest.env_for("http://example.org:8080/")).fullpath.
       should.equal "/"
-    Rack::Request.new(Rack::MockRequest.env_for("https://example.org/")).fullpath.
+    Lack::Request.new(Lack::MockRequest.env_for("https://example.org/")).fullpath.
       should.equal "/"
 
-    Rack::Request.new(Rack::MockRequest.env_for("https://example.com:8080/foo?foo")).fullpath.
+    Lack::Request.new(Lack::MockRequest.env_for("https://example.com:8080/foo?foo")).fullpath.
       should.equal "/foo?foo"
   end
 
   should "handle multiple media type parameters" do
-    req = Rack::Request.new \
-      Rack::MockRequest.env_for("/",
+    req = Lack::Request.new \
+      Lack::MockRequest.env_for("/",
         "CONTENT_TYPE" => 'text/plain; foo=BAR,baz=bizzle dizzle;BLING=bam;blong="boo";zump="zoo\"o";weird=lol"')
       req.should.not.be.form_data
       req.media_type_params.should.include 'foo'
@@ -657,7 +657,7 @@ Content-Transfer-Encoding: base64\r
 /9j/4AAQSkZJRgABAQAAAQABAAD//gA+Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcg\r
 --AaB03x--\r
 EOF
-    req = Rack::Request.new Rack::MockRequest.env_for("/",
+    req = Lack::Request.new Lack::MockRequest.env_for("/",
                       "CONTENT_TYPE" => "multipart/form-data, boundary=AaB03x",
                       "CONTENT_LENGTH" => input.size,
                       :input => input)
@@ -696,7 +696,7 @@ Content-Transfer-Encoding: base64
 /9j/4AAQSkZJRgABAQAAAQABAAD//gA+Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcg
 --AaB03x--
 EOF
-    req = Rack::Request.new Rack::MockRequest.env_for("/",
+    req = Lack::Request.new Lack::MockRequest.env_for("/",
                       "CONTENT_TYPE" => "multipart/form-data, boundary=AaB03x",
                       "CONTENT_LENGTH" => input.size,
                       :input => input)
@@ -720,7 +720,7 @@ Content-Transfer-Encoding: base64\r
 /9j/4AAQSkZJRgABAQAAAQABAAD//gA+Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcg\r
 --AaB03x--\r
 EOF
-    req = Rack::Request.new Rack::MockRequest.env_for("/",
+    req = Lack::Request.new Lack::MockRequest.env_for("/",
                       "CONTENT_TYPE" => "multipart/form-data, boundary=AaB03x",
                       "CONTENT_LENGTH" => input.size,
                       :input => input)
@@ -756,7 +756,7 @@ content-disposition: form-data; name="mean"; filename="mean"\r
 --AaB03xha\r
 --AaB03x--\r
 EOF
-    req = Rack::Request.new Rack::MockRequest.env_for("/",
+    req = Lack::Request.new Lack::MockRequest.env_for("/",
                       "CONTENT_TYPE" => "multipart/form-data, boundary=AaB03x",
                       "CONTENT_LENGTH" => input.size,
                       :input => input)
@@ -782,11 +782,11 @@ Content-Transfer-Encoding: base64\r
 /9j/4AAQSkZJRgABAQAAAQABAAD//gA+Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcg\r
 --AaB03x--\r
 EOF
-    env = Rack::MockRequest.env_for("/",
+    env = Lack::MockRequest.env_for("/",
                           "CONTENT_TYPE" => "multipart/form-data, boundary=AaB03x",
                           "CONTENT_LENGTH" => input.size,
                           :input => input)
-    req = Rack::Request.new(env)
+    req = Lack::Request.new(env)
     req.params
     env['rack.tempfiles'].size.should.equal(2)
   end
@@ -796,7 +796,7 @@ EOF
 --AaB03x\r
 content-disposition: form-data; name="huge"; filename="huge"\r
 EOF
-    req = Rack::Request.new Rack::MockRequest.env_for("/",
+    req = Lack::Request.new Lack::MockRequest.env_for("/",
                       "CONTENT_TYPE" => "multipart/form-data, boundary=AaB03x",
                       "CONTENT_LENGTH" => input.size,
                       :input => input)
@@ -809,7 +809,7 @@ content-disposition: form-data; name="huge"; filename="huge"\r
 \r
 foo\r
 EOF
-    req = Rack::Request.new Rack::MockRequest.env_for("/",
+    req = Lack::Request.new Lack::MockRequest.env_for("/",
                       "CONTENT_TYPE" => "multipart/form-data, boundary=AaB03x",
                       "CONTENT_LENGTH" => input.size,
                       :input => input)
@@ -822,7 +822,7 @@ content-disposition: form-data; name="huge"; filename="huge"\r
 \r
 foo\r
 EOF
-    req = Rack::Request.new Rack::MockRequest.env_for("/",
+    req = Lack::Request.new Lack::MockRequest.env_for("/",
                       "CONTENT_TYPE" => "multipart/form-data, boundary=AaB03x",
                       "CONTENT_LENGTH" => input.size,
                       :input => input)
@@ -835,7 +835,7 @@ EOF
 --AaB03x\r
 content-disposition: form-data; name="huge"; filename="huge"\r
 EOF
-    req = Rack::Request.new Rack::MockRequest.env_for("/",
+    req = Lack::Request.new Lack::MockRequest.env_for("/",
                       "CONTENT_TYPE" => "multipart/form-data, boundary=AaB03x",
                       "CONTENT_LENGTH" => input.size,
                       :input => input)
@@ -854,7 +854,7 @@ Content-Transfer-Encoding: 7bit\r
 foo\r
 --AaB03x--\r
 EOF
-    req = Rack::Request.new Rack::MockRequest.env_for("/",
+    req = Lack::Request.new Lack::MockRequest.env_for("/",
                       "CONTENT_TYPE" => "multipart/related, boundary=AaB03x",
                       "CONTENT_LENGTH" => input.size,
                       :input => input)
@@ -877,7 +877,7 @@ content-type: application/octet-stream\r
 --AaB03x--\r
 EOF
 
-        req = Rack::Request.new Rack::MockRequest.env_for("/",
+        req = Lack::Request.new Lack::MockRequest.env_for("/",
                           "CONTENT_TYPE" => "multipart/form-data, boundary=AaB03x",
                           "CONTENT_LENGTH" => input.size,
                           :input => input)
@@ -897,7 +897,7 @@ content-type: application/octet-stream\r
 --AaB03x--\r
 EOF
 
-      req = Rack::Request.new Rack::MockRequest.env_for("/",
+      req = Lack::Request.new Lack::MockRequest.env_for("/",
                         "CONTENT_TYPE" => "multipart/form-data, boundary=AaB03x",
                         "CONTENT_LENGTH" => input.size,
                         :input => input)
@@ -920,7 +920,7 @@ EOF
     rack_input.write(input)
     rack_input.rewind
 
-    req = Rack::Request.new Rack::MockRequest.env_for("/",
+    req = Lack::Request.new Lack::MockRequest.env_for("/",
                       "CONTENT_TYPE" => "multipart/form-data, boundary=AaB03x",
                       "CONTENT_LENGTH" => input.size,
                       :input => rack_input)
@@ -936,7 +936,7 @@ EOF
     rack_input.write(input)
     rack_input.rewind
 
-    req = Rack::Request.new Rack::MockRequest.env_for("/",
+    req = Lack::Request.new Lack::MockRequest.env_for("/",
                       "rack.request.form_hash" => {'foo' => 'bar'},
                       "rack.request.form_input" => rack_input,
                       :input => rack_input)
@@ -944,9 +944,9 @@ EOF
     req.POST.should.equal(req.env['rack.request.form_hash'])
   end
 
-  should "conform to the Rack spec" do
+  should "conform to the Lack spec" do
     app = lambda { |env|
-      content = Rack::Request.new(env).POST["file"].inspect
+      content = Lack::Request.new(env).POST["file"].inspect
       size = content.respond_to?(:bytesize) ? content.bytesize : content.size
       [200, {"Content-Type" => "text/html", "Content-Length" => size.to_s}, [content]]
     }
@@ -965,7 +965,7 @@ Content-Transfer-Encoding: base64\r
 --AaB03x--\r
 EOF
     input.force_encoding("ASCII-8BIT") if input.respond_to? :force_encoding
-    res = Rack::MockRequest.new(Rack::Lint.new(app)).get "/",
+    res = Lack::MockRequest.new(Lack::Lint.new(app)).get "/",
       "CONTENT_TYPE" => "multipart/form-data, boundary=AaB03x",
       "CONTENT_LENGTH" => input.size.to_s, "rack.input" => StringIO.new(input)
 
@@ -974,7 +974,7 @@ EOF
 
   should "parse Accept-Encoding correctly" do
     parser = lambda do |x|
-      Rack::Request.new(Rack::MockRequest.env_for("", "HTTP_ACCEPT_ENCODING" => x)).accept_encoding
+      Lack::Request.new(Lack::MockRequest.env_for("", "HTTP_ACCEPT_ENCODING" => x)).accept_encoding
     end
 
     parser.call(nil).should.equal([])
@@ -991,7 +991,7 @@ EOF
 
   should "parse Accept-Language correctly" do
     parser = lambda do |x|
-      Rack::Request.new(Rack::MockRequest.env_for("", "HTTP_ACCEPT_LANGUAGE" => x)).accept_language
+      Lack::Request.new(Lack::MockRequest.env_for("", "HTTP_ACCEPT_LANGUAGE" => x)).accept_language
     end
 
     parser.call(nil).should.equal([])
@@ -1007,14 +1007,14 @@ EOF
   end
 
   ip_app = lambda { |env|
-    request = Rack::Request.new(env)
-    response = Rack::Response.new
+    request = Lack::Request.new(env)
+    response = Lack::Response.new
     response.write request.ip
     response.finish
   }
 
   should 'provide ip information' do
-    mock = Rack::MockRequest.new(Rack::Lint.new(ip_app))
+    mock = Lack::MockRequest.new(Lack::Lint.new(ip_app))
 
     res = mock.get '/', 'REMOTE_ADDR' => '1.2.3.4'
     res.body.should.equal '1.2.3.4'
@@ -1027,7 +1027,7 @@ EOF
   end
 
   should 'deals with proxies' do
-    mock = Rack::MockRequest.new(Rack::Lint.new(ip_app))
+    mock = Lack::MockRequest.new(Lack::Lint.new(ip_app))
 
     res = mock.get '/',
       'REMOTE_ADDR' => '1.2.3.4',
@@ -1107,7 +1107,7 @@ EOF
   end
 
   should "not allow IP spoofing via Client-IP and X-Forwarded-For headers" do
-    mock = Rack::MockRequest.new(Rack::Lint.new(ip_app))
+    mock = Lack::MockRequest.new(Lack::Lint.new(ip_app))
 
     # IP Spoofing attempt:
     # Client sends          X-Forwarded-For: 6.6.6.6
@@ -1116,7 +1116,7 @@ EOF
     # App receives:         X-Forwarded-For: 6.6.6.6
     #                       X-Forwarded-For: 2.2.2.3, 192.168.0.7
     #                       Client-IP: 6.6.6.6
-    # Rack env:             HTTP_X_FORWARDED_FOR: '6.6.6.6, 2.2.2.3, 192.168.0.7'
+    # Lack env:             HTTP_X_FORWARDED_FOR: '6.6.6.6, 2.2.2.3, 192.168.0.7'
     #                       HTTP_CLIENT_IP: '6.6.6.6'
     res = mock.get '/',
       'HTTP_X_FORWARDED_FOR' => '6.6.6.6, 2.2.2.3, 192.168.0.7',
@@ -1125,7 +1125,7 @@ EOF
   end
 
   should "regard local addresses as proxies" do
-    req = Rack::Request.new(Rack::MockRequest.env_for("/"))
+    req = Lack::Request.new(Lack::MockRequest.env_for("/"))
     req.trusted_proxy?('127.0.0.1').should.equal 0
     req.trusted_proxy?('10.0.0.1').should.equal 0
     req.trusted_proxy?('172.16.0.1').should.equal 0
@@ -1148,16 +1148,16 @@ EOF
     req.trusted_proxy?("2001:470:1f0b:18f8::1").should.equal nil
   end
 
-  class MyRequest < Rack::Request
+  class MyRequest < Lack::Request
     def params
       {:foo => "bar"}
     end
   end
 
   should "allow subclass request to be instantiated after parent request" do
-    env = Rack::MockRequest.env_for("/?foo=bar")
+    env = Lack::MockRequest.env_for("/?foo=bar")
 
-    req1 = Rack::Request.new(env)
+    req1 = Lack::Request.new(env)
     req1.GET.should.equal "foo" => "bar"
     req1.params.should.equal "foo" => "bar"
 
@@ -1167,20 +1167,20 @@ EOF
   end
 
   should "allow parent request to be instantiated after subclass request" do
-    env = Rack::MockRequest.env_for("/?foo=bar")
+    env = Lack::MockRequest.env_for("/?foo=bar")
 
     req1 = MyRequest.new(env)
     req1.GET.should.equal "foo" => "bar"
     req1.params.should.equal :foo => "bar"
 
-    req2 = Rack::Request.new(env)
+    req2 = Lack::Request.new(env)
     req2.GET.should.equal "foo" => "bar"
     req2.params.should.equal "foo" => "bar"
   end
 
   should "raise TypeError every time if request parameters are broken" do
-    broken_query = Rack::MockRequest.env_for("/?foo%5B%5D=0&foo%5Bbar%5D=1")
-    req = Rack::Request.new(broken_query)
+    broken_query = Lack::MockRequest.env_for("/?foo%5B%5D=0&foo%5Bbar%5D=1")
+    req = Lack::Request.new(broken_query)
     lambda{req.GET}.should.raise(TypeError)
     lambda{req.params}.should.raise(TypeError)
   end
@@ -1190,8 +1190,8 @@ EOF
     c = CGI.escape(b)
     should "not strip '#{a}' => '#{c}' => '#{b}' escaped character from parameters when accessed as string" do
       url = "/?foo=#{c}bar#{c}"
-      env = Rack::MockRequest.env_for(url)
-      req2 = Rack::Request.new(env)
+      env = Lack::MockRequest.env_for(url)
+      req2 = Lack::Request.new(env)
       req2.GET.should.equal "foo" => "#{b}bar#{b}"
       req2.params.should.equal "foo" => "#{b}bar#{b}"
     end

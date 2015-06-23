@@ -1,16 +1,16 @@
-module Rack
-  # Rack::Builder implements a small DSL to iteratively construct Rack
+module Lack
+  # Lack::Builder implements a small DSL to iteratively construct Lack
   # applications.
   #
   # Example:
   #
   #  require 'rack/lobster'
-  #  app = Rack::Builder.new do
-  #    use Rack::CommonLogger
-  #    use Rack::ShowExceptions
+  #  app = Lack::Builder.new do
+  #    use Lack::CommonLogger
+  #    use Lack::ShowExceptions
   #    map "/lobster" do
-  #      use Rack::Lint
-  #      run Rack::Lobster.new
+  #      use Lack::Lint
+  #      run Lack::Lobster.new
   #    end
   #  end
   #
@@ -18,15 +18,15 @@ module Rack
   #
   # Or
   #
-  #  app = Rack::Builder.app do
-  #    use Rack::CommonLogger
+  #  app = Lack::Builder.app do
+  #    use Lack::CommonLogger
   #    run lambda { |env| [200, {'Content-Type' => 'text/plain'}, ['OK']] }
   #  end
   #
   #  run app
   #
   # +use+ adds middleware to the stack, +run+ dispatches to an application.
-  # You can use +map+ to construct a Rack::URLMap in a convenient way.
+  # You can use +map+ to construct a Lack::URLMap in a convenient way.
 
   class Builder
     def self.parse_file(config, opts = Server::Options.new)
@@ -46,7 +46,7 @@ module Rack
     end
 
     def self.new_from_string(builder_script, file="(rackup)")
-      eval "Rack::Builder.new {\n" + builder_script + "\n}.to_app", TOPLEVEL_BINDING, file, 0
+      eval "Lack::Builder.new {\n" + builder_script + "\n}.to_app", TOPLEVEL_BINDING, file, 0
     end
 
     def initialize(default_app = nil,&block)
@@ -88,7 +88,7 @@ module Rack
       @use << proc { |app| middleware.new(app, *args, &block) }
     end
 
-    # Takes an argument that is an object that responds to #call and returns a Rack response.
+    # Takes an argument that is an object that responds to #call and returns a Lack response.
     # The simplest form of this is a lambda object:
     #
     #   run lambda { |env| [200, { "Content-Type" => "text/plain" }, ["OK"]] }
@@ -109,7 +109,7 @@ module Rack
     # Takes a lambda or block that is used to warm-up the application.
     #
     #   warmup do |app|
-    #     client = Rack::MockRequest.new(app)
+    #     client = Lack::MockRequest.new(app)
     #     client.get('/')
     #   end
     #
@@ -121,7 +121,7 @@ module Rack
 
     # Creates a route within the application.
     #
-    #   Rack::Builder.app do
+    #   Lack::Builder.app do
     #     map '/' do
     #       run Heartbeat
     #     end
@@ -129,7 +129,7 @@ module Rack
     #
     # The +use+ method can also be used here to specify middleware to run under a specific path:
     #
-    #   Rack::Builder.app do
+    #   Lack::Builder.app do
     #     map '/' do
     #       use Middleware
     #       run Heartbeat
